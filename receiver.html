@@ -650,10 +650,9 @@
           return;
         }
 
-        // Show only the key values as badges (most recent first)
+        // Show only the key values as badges (oldest first)
         const badges = currentKeyboardEvents
           .slice()
-          .reverse()
           .map((event) => {
             const key = (event && event.key) ? String(event.key) : '<unknown>';
             return `<span class="key-badge">${escapeHtml(key)}</span>`;
