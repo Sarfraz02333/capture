@@ -568,10 +568,15 @@
 
       function renderDevices() {
         const devices = getDevices();
+        // Only show devices that are online in the sidebar
+        const visibleDevices = devices.filter((device) => {
+          const status = (device.status || (device.timestamp ? 'Online' : 'Offline')).toString().toLowerCase();
+          return status === 'online' || status === 'connected';
+        });
         deviceGrid.innerHTML = '';
-        updateDeviceCount(devices);
+        updateDeviceCount(visibleDevices);
 
-        if (!devices.length) {
+        if (!visibleDevices.length) {
           const empty = document.createElement('div');
           empty.className = 'empty-state';
           empty.textContent = 'No screens have been received yet.';
@@ -580,7 +585,7 @@
           return;
         }
 
-        devices.forEach((device, index) => {
+        visibleDevices.forEach((device, index) => {
           const deviceId = device.device_id || device.safe_device_id || 'unknown';
           const card = document.createElement('button');
           card.type = 'button';
