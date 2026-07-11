@@ -302,6 +302,20 @@
         border-radius: 18px;
         padding: 12px;
       }
+      .key-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+      }
+      .key-badge {
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.04);
+        color: #cfe8ff;
+        border: 1px solid rgba(255,255,255,0.03);
+        font-size: 0.9rem;
+      }
       .log-header {
         display: flex;
         align-items: center;
@@ -636,26 +650,17 @@
           return;
         }
 
-        const rows = currentKeyboardEvents
+        // Show only the key values as badges (most recent first)
+        const badges = currentKeyboardEvents
           .slice()
           .reverse()
-          .map((event) => `
-            <tr>
-              <td>${event.time || ''}</td>
-              <td>${event.type || ''}</td>
-              <td>${event.key || ''}</td>
-            </tr>
-          `)
+          .map((event) => {
+            const key = (event && event.key) ? String(event.key) : '<unknown>';
+            return `<span class="key-badge">${escapeHtml(key)}</span>`;
+          })
           .join('');
 
-        logBody.innerHTML = `
-          <table class="log-table">
-            <thead>
-              <tr><th>Time</th><th>Type</th><th>Key</th></tr>
-            </thead>
-            <tbody>${rows}</tbody>
-          </table>
-        `;
+        logBody.innerHTML = `<div class="key-badges">${badges}</div>`;
       }
 
       function setPausedState(paused) {
