@@ -502,6 +502,13 @@
         });
       }
 
+      function getVisibleDevices() {
+        return getDevices().filter((device) => {
+          const status = (device.status || (device.timestamp ? 'Online' : 'Offline')).toString().toLowerCase();
+          return status === 'online' || status === 'connected';
+        });
+      }
+
       function updateDeviceCount(devices) {
         deviceCount.textContent = `Computers (${devices.length})`;
       }
@@ -513,7 +520,7 @@
       }
 
       function selectDevice(index) {
-        const devices = getDevices();
+        const devices = getVisibleDevices();
         if (!devices.length) {
           selectedDeviceIndex = 0;
           updatePreview();
@@ -535,7 +542,7 @@
       }
 
       function getSelectedDevice() {
-        const devices = getDevices();
+        const devices = getVisibleDevices();
         if (!devices.length) {
           return null;
         }
@@ -543,7 +550,7 @@
       }
 
       function updatePreview() {
-        const devices = getDevices();
+        const devices = getVisibleDevices();
         if (!devices.length) {
           previewStatus.textContent = 'OFFLINE';
           statusDot.classList.add('offline');
@@ -567,12 +574,7 @@
       }
 
       function renderDevices() {
-        const devices = getDevices();
-        // Only show devices that are online in the sidebar
-        const visibleDevices = devices.filter((device) => {
-          const status = (device.status || (device.timestamp ? 'Online' : 'Offline')).toString().toLowerCase();
-          return status === 'online' || status === 'connected';
-        });
+        const visibleDevices = getVisibleDevices();
         deviceGrid.innerHTML = '';
         updateDeviceCount(visibleDevices);
 

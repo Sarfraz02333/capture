@@ -374,8 +374,13 @@ class ReceiverHandler(BaseHTTPRequestHandler):
             try:
                 ts = entry.get('timestamp')
                 if ts:
+                    # normalize timezone offsets like -0700 to -07:00 for fromisoformat
+                    m = re.search(r'([+-]\d{2})(\d{2})$', ts)
+                    ts_normalized = ts
+                    if m:
+                        ts_normalized = ts[:-5] + m.group(1) + ':' + m.group(2)
                     try:
-                        parsed = datetime.fromisoformat(ts)
+                        parsed = datetime.fromisoformat(ts_normalized)
                     except Exception:
                         parsed = None
                     if parsed is not None:
