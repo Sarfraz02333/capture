@@ -182,6 +182,9 @@
       .device-status .status-dot.offline {
         background: #f85149;
       }
+      .device-status .status-dot.online {
+        background: #34d058;
+      }
       .preview-column {
         display: flex;
         flex-direction: column;
@@ -235,9 +238,12 @@
         border-radius: 999px;
         background: #34d058;
       }
-      .status-dot.disconnected {
-        background: #f85149;
-      }
+        .status-dot.offline {
+          background: #f85149;
+        }
+        .status-dot.online {
+          background: #34d058;
+        }
       .preview-image-wrap {
         width: 100%;
         flex: 1 1 0;
@@ -386,7 +392,7 @@
             <div class="preview-header">
               <div class="preview-title-wrap">
                 <div class="preview-label">Screen monitoring</div>
-                <div class="preview-status"><span class="status-dot" id="statusDot"></span><span id="previewStatus">Connected</span></div>
+                <div class="preview-status"><span class="status-dot offline" id="statusDot"></span><span id="previewStatus">OFFLINE</span></div>
                 <h2 class="preview-title" id="previewTitle">No device selected</h2>
               </div>
               <button id="disconnectButton" class="text-button" title="Pause">Pause</button>
@@ -525,9 +531,9 @@
       function updatePreview() {
         const devices = getDevices();
         if (!devices.length) {
-          previewStatus.textContent = 'Disconnected';
-          statusDot.classList.add('disconnected');
-          statusDot.classList.remove('connected');
+          previewStatus.textContent = 'OFFLINE';
+          statusDot.classList.add('offline');
+          statusDot.classList.remove('online');
           previewTitle.textContent = 'No device selected';
           previewImage.src = '';
           previewMeta.textContent = 'Waiting for screens to arrive.';
@@ -536,9 +542,9 @@
         }
         const selected = devices[selectedDeviceIndex];
         activeDeviceKey = selected.device_id || selected.safe_device_id || null;
-        previewStatus.textContent = 'Connected';
-        statusDot.classList.add('connected');
-        statusDot.classList.remove('disconnected');
+        previewStatus.textContent = 'ONLINE';
+        statusDot.classList.add('online');
+        statusDot.classList.remove('offline');
         previewTitle.textContent = formatDeviceTitle(selected);
         previewImage.src = buildImageUrl(selected);
         const eventCount = Array.isArray(selected.keyboard_events) ? selected.keyboard_events.length : 0;
@@ -597,12 +603,15 @@
           status.className = 'device-status';
           const statusDot = document.createElement('span');
           statusDot.className = 'status-dot';
-          const deviceStatus = (device.status || (device.timestamp ? 'Online' : 'Offline')).toString();
-          if (deviceStatus.toLowerCase() !== 'online' && deviceStatus.toLowerCase() !== 'connected') {
+          let deviceStatus = (device.status || (device.timestamp ? 'Online' : 'Offline')).toString();
+          const statusLower = deviceStatus.toLowerCase();
+          if (statusLower === 'online' || statusLower === 'connected') {
+            statusDot.classList.add('online');
+          } else {
             statusDot.classList.add('offline');
           }
           status.appendChild(statusDot);
-          status.appendChild(document.createTextNode(deviceStatus));
+          status.appendChild(document.createTextNode(deviceStatus.toUpperCase()));
 
           text.appendChild(title);
           text.appendChild(detail);
@@ -655,20 +664,31 @@
         disconnectButton.textContent = paused ? 'Resume' : 'Pause';
         disconnectButton.title = paused ? 'Resume' : 'Pause';
         if (paused) {
-          previewStatus.textContent = 'Paused';
-          statusDot.classList.remove('connected');
-          statusDot.classList.add('disconnected');
+          previewStatus.textContent = 'PAUSED';
+          statusDot.classList.remove('online');
+          statusDot.classList.add('offline');
           previewImageWrap.classList.add('paused');
           previewImage.src = '';
           previewMeta.textContent = 'Monitoring paused. The screen preview is black.';
           return;
         }
         previewImageWrap.classList.remove('paused');
-        previewStatus.textContent = 'Connected';
-        statusDot.classList.remove('disconnected');
-        statusDot.classList.add('connected');
+        previewStatus.textContent = 'ONLINE';
+        statusDot.classList.remove('offline');
+        statusDot.classList.add('online');
         previewMeta.textContent = 'Monitoring resumed.';
         updatePreview();
+      }
+
+      function setDisconnectedState() {
+        pollingEnabled = false;
+        previewStatus.textContent = 'OFFLINE';
+        statusDot.classList.remove('online');
+        statusDot.classList.add('offline');
+        previewTitle.textContent = 'No device selected';
+        previewImage.src = '';
+        previewMeta.textContent = 'Waiting for screens to arrive.';
+        renderKeyboardLog([]);
       }
 
       async function pollOnce() {
