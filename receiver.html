@@ -690,7 +690,9 @@
       }
 
       function setDisconnectedState() {
+        // Receiver is unreachable: stop polling and clear displayed devices.
         pollingEnabled = false;
+        lastPayload = { devices: [] };
         previewStatus.textContent = 'OFFLINE';
         statusDot.classList.remove('online');
         statusDot.classList.add('offline');
@@ -698,6 +700,7 @@
         previewImage.src = '';
         previewMeta.textContent = 'Waiting for screens to arrive.';
         renderKeyboardLog([]);
+        renderDevices();
       }
 
       async function pollOnce() {

