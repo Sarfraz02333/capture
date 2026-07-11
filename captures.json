@@ -1,0 +1,519 @@
+{
+  "98-EE-CB-B4-DD-61": {
+    "device_id": "98-EE-CB-B4-DD-61",
+    "safe_device_id": "98-EE-CB-B4-DD-61",
+    "timestamp": "2026-07-11T14:09:29-0700",
+    "source": "standalone-capture-app",
+    "width": 1280,
+    "height": 720,
+    "format": "WEBP",
+    "encoding": "webp-base64",
+    "title": "",
+    "url": "",
+    "archive_path": "E:\\receive_screen - Copy\\receive_screen - Copy\\New folder\\archive\\98-EE-CB-B4-DD-61\\capture_20260711_210929_425461_98-EE-CB-B4-DD-61.jpg",
+    "archive_name": "capture_20260711_210929_425461_98-EE-CB-B4-DD-61.jpg",
+    "image_path": "E:\\receive_screen - Copy\\receive_screen - Copy\\New folder\\archive\\98-EE-CB-B4-DD-61\\latest.jpg",
+    "keyboard_events": [
+      {
+        "time": "2026-07-11T13:49:00-0700",
+        "type": "press",
+        "key": "Key.f5"
+      },
+      {
+        "time": "2026-07-11T13:49:00-0700",
+        "type": "press",
+        "key": "Key.f5"
+      },
+      {
+        "time": "2026-07-11T13:49:02-0700",
+        "type": "press",
+        "key": "Key.right"
+      },
+      {
+        "time": "2026-07-11T13:49:03-0700",
+        "type": "press",
+        "key": "Key.backspace"
+      },
+      {
+        "time": "2026-07-11T13:49:03-0700",
+        "type": "press",
+        "key": "6"
+      },
+      {
+        "time": "2026-07-11T13:49:03-0700",
+        "type": "press",
+        "key": "Key.enter"
+      },
+      {
+        "time": "2026-07-11T13:49:02-0700",
+        "type": "press",
+        "key": "Key.right"
+      },
+      {
+        "time": "2026-07-11T13:49:03-0700",
+        "type": "press",
+        "key": "Key.backspace"
+      },
+      {
+        "time": "2026-07-11T13:49:03-0700",
+        "type": "press",
+        "key": "6"
+      },
+      {
+        "time": "2026-07-11T13:49:03-0700",
+        "type": "press",
+        "key": "Key.enter"
+      },
+      {
+        "time": "2026-07-11T13:49:05-0700",
+        "type": "press",
+        "key": "Key.f5"
+      },
+      {
+        "time": "2026-07-11T13:49:05-0700",
+        "type": "press",
+        "key": "Key.f5"
+      },
+      {
+        "time": "2026-07-11T13:49:06-0700",
+        "type": "press",
+        "key": "Key.f5"
+      },
+      {
+        "time": "2026-07-11T13:49:06-0700",
+        "type": "press",
+        "key": "Key.f5"
+      },
+      {
+        "time": "2026-07-11T13:49:06-0700",
+        "type": "press",
+        "key": "Key.f5"
+      },
+      {
+        "time": "2026-07-11T13:49:07-0700",
+        "type": "press",
+        "key": "Key.f5"
+      },
+      {
+        "time": "2026-07-11T13:49:07-0700",
+        "type": "press",
+        "key": "Key.f5"
+      },
+      {
+        "time": "2026-07-11T13:49:06-0700",
+        "type": "press",
+        "key": "Key.f5"
+      },
+      {
+        "time": "2026-07-11T13:49:06-0700",
+        "type": "press",
+        "key": "Key.f5"
+      },
+      {
+        "time": "2026-07-11T13:49:06-0700",
+        "type": "press",
+        "key": "Key.f5"
+      },
+      {
+        "time": "2026-07-11T13:49:07-0700",
+        "type": "press",
+        "key": "Key.f5"
+      },
+      {
+        "time": "2026-07-11T13:49:07-0700",
+        "type": "press",
+        "key": "Key.f5"
+      },
+      {
+        "time": "2026-07-11T13:49:21-0700",
+        "type": "press",
+        "key": "Key.f5"
+      },
+      {
+        "time": "2026-07-11T13:49:21-0700",
+        "type": "press",
+        "key": "Key.f5"
+      },
+      {
+        "time": "2026-07-11T13:49:21-0700",
+        "type": "press",
+        "key": "Key.f5"
+      },
+      {
+        "time": "2026-07-11T13:49:21-0700",
+        "type": "press",
+        "key": "Key.f5"
+      },
+      {
+        "time": "2026-07-11T13:49:25-0700",
+        "type": "press",
+        "key": "1"
+      },
+      {
+        "time": "2026-07-11T13:49:27-0700",
+        "type": "press",
+        "key": "Key.enter"
+      },
+      {
+        "time": "2026-07-11T13:49:25-0700",
+        "type": "press",
+        "key": "1"
+      },
+      {
+        "time": "2026-07-11T13:49:27-0700",
+        "type": "press",
+        "key": "Key.enter"
+      },
+      {
+        "time": "2026-07-11T13:49:31-0700",
+        "type": "press",
+        "key": "Key.right"
+      },
+      {
+        "time": "2026-07-11T13:49:31-0700",
+        "type": "press",
+        "key": "Key.right"
+      },
+      {
+        "time": "2026-07-11T13:49:32-0700",
+        "type": "press",
+        "key": "Key.backspace"
+      },
+      {
+        "time": "2026-07-11T13:49:32-0700",
+        "type": "press",
+        "key": "5"
+      },
+      {
+        "time": "2026-07-11T13:49:33-0700",
+        "type": "press",
+        "key": "Key.enter"
+      },
+      {
+        "time": "2026-07-11T13:49:32-0700",
+        "type": "press",
+        "key": "5"
+      },
+      {
+        "time": "2026-07-11T13:49:33-0700",
+        "type": "press",
+        "key": "Key.enter"
+      },
+      {
+        "time": "2026-07-11T13:49:42-0700",
+        "type": "press",
+        "key": "Key.ctrl_l"
+      },
+      {
+        "time": "2026-07-11T13:49:42-0700",
+        "type": "press",
+        "key": "Key.shift"
+      },
+      {
+        "time": "2026-07-11T13:49:42-0700",
+        "type": "press",
+        "key": "Key.ctrl_l"
+      },
+      {
+        "time": "2026-07-11T13:49:42-0700",
+        "type": "press",
+        "key": "Key.shift"
+      },
+      {
+        "time": "2026-07-11T13:49:42-0700",
+        "type": "press",
+        "key": "Key.esc"
+      },
+      {
+        "time": "2026-07-11T13:49:42-0700",
+        "type": "press",
+        "key": "Key.esc"
+      },
+      {
+        "time": "2026-07-11T13:49:57-0700",
+        "type": "press",
+        "key": "Key.shift"
+      },
+      {
+        "time": "2026-07-11T13:49:58-0700",
+        "type": "press",
+        "key": "Key.shift"
+      },
+      {
+        "time": "2026-07-11T13:49:58-0700",
+        "type": "press",
+        "key": "Key.shift"
+      },
+      {
+        "time": "2026-07-11T13:49:58-0700",
+        "type": "press",
+        "key": "Key.shift"
+      },
+      {
+        "time": "2026-07-11T13:49:58-0700",
+        "type": "press",
+        "key": "Key.shift"
+      },
+      {
+        "time": "2026-07-11T13:49:58-0700",
+        "type": "press",
+        "key": "Key.shift"
+      },
+      {
+        "time": "2026-07-11T13:49:58-0700",
+        "type": "press",
+        "key": "Key.shift"
+      },
+      {
+        "time": "2026-07-11T13:51:22-0700",
+        "type": "press",
+        "key": "1"
+      },
+      {
+        "time": "2026-07-11T13:51:24-0700",
+        "type": "press",
+        "key": "2"
+      },
+      {
+        "time": "2026-07-11T13:51:25-0700",
+        "type": "press",
+        "key": "3"
+      },
+      {
+        "time": "2026-07-11T13:51:30-0700",
+        "type": "press",
+        "key": "1"
+      },
+      {
+        "time": "2026-07-11T13:51:31-0700",
+        "type": "press",
+        "key": "2"
+      },
+      {
+        "time": "2026-07-11T13:51:31-0700",
+        "type": "press",
+        "key": "3"
+      },
+      {
+        "time": "2026-07-11T13:51:34-0700",
+        "type": "press",
+        "key": "3"
+      },
+      {
+        "time": "2026-07-11T13:51:34-0700",
+        "type": "press",
+        "key": "2"
+      },
+      {
+        "time": "2026-07-11T13:51:34-0700",
+        "type": "press",
+        "key": "1"
+      },
+      {
+        "time": "2026-07-11T13:51:53-0700",
+        "type": "press",
+        "key": "Key.ctrl_l"
+      },
+      {
+        "time": "2026-07-11T13:51:53-0700",
+        "type": "press",
+        "key": "Key.shift"
+      },
+      {
+        "time": "2026-07-11T13:51:53-0700",
+        "type": "press",
+        "key": "Key.esc"
+      },
+      {
+        "time": "2026-07-11T13:52:02-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T13:52:03-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T13:52:04-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T13:52:04-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T13:52:04-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T13:52:05-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T13:52:05-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T13:52:06-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T13:52:06-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T13:52:06-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T14:08:56-0700",
+        "type": "press",
+        "key": "Key.ctrl_l"
+      },
+      {
+        "time": "2026-07-11T14:08:56-0700",
+        "type": "press",
+        "key": "Key.shift"
+      },
+      {
+        "time": "2026-07-11T14:08:56-0700",
+        "type": "press",
+        "key": "Key.esc"
+      },
+      {
+        "time": "2026-07-11T14:09:03-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T14:09:03-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T14:09:04-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T14:09:04-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T14:09:05-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T14:09:06-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T14:09:06-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T14:09:06-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T14:09:07-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T14:09:07-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T14:09:07-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T14:09:07-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T14:09:08-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T14:09:08-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T14:09:08-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T14:09:08-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T14:09:08-0700",
+        "type": "press",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T14:09:12-0700",
+        "type": "press",
+        "key": "Key.enter"
+      },
+      {
+        "time": "2026-07-11T14:09:14-0700",
+        "type": "press",
+        "key": "Key.right"
+      },
+      {
+        "time": "2026-07-11T14:09:15-0700",
+        "type": "press",
+        "key": "Key.backspace"
+      },
+      {
+        "time": "2026-07-11T14:09:15-0700",
+        "type": "press",
+        "key": "5"
+      },
+      {
+        "time": "2026-07-11T14:09:15-0700",
+        "type": "press",
+        "key": "Key.enter"
+      },
+      {
+        "time": "2026-07-11T14:09:18-0700",
+        "type": "press",
+        "key": "Key.ctrl_l"
+      },
+      {
+        "time": "2026-07-11T14:09:18-0700",
+        "type": "press",
+        "key": "Key.shift"
+      },
+      {
+        "time": "2026-07-11T14:09:18-0700",
+        "type": "press",
+        "key": "Key.esc"
+      }
+    ]
+  }
+}

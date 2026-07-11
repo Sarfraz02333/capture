@@ -1,0 +1,741 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PC Monitor</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: Inter, Arial, sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        min-height: 100vh;
+        height: 100%;
+        overflow: hidden;
+      }
+      body {
+        background: #090b10;
+        color: #f5f5f5;
+        padding: 24px;
+      }
+      .panel {
+        width: min(1600px, 100%);
+        margin: 0 auto;
+        background: #111726;
+        border-radius: 24px;
+        padding: 24px;
+        box-shadow: 0 30px 90px rgba(0, 0, 0, 0.45);
+        height: calc(100vh - 48px);
+        overflow: hidden;
+        display: grid;
+      }
+      .app-shell {
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 20px;
+        height: 100%;
+      }
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+      .sidebar-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .sidebar-title {
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: 700;
+      }
+      .sidebar-subtitle {
+        margin: 4px 0 0;
+        color: #8b949e;
+        font-size: 0.92rem;
+      }
+      .sidebar-actions {
+        display: flex;
+        gap: 10px;
+      }
+      .icon-button {
+        width: 38px;
+        height: 38px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #2b3848;
+        border-radius: 12px;
+        background: #0f1723;
+        color: #f5f5f5;
+        cursor: pointer;
+        font-size: 1rem;
+        padding: 0;
+      }
+      .text-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #2b3848;
+        border-radius: 12px;
+        background: #0f1723;
+        color: #f5f5f5;
+        cursor: pointer;
+        font-size: 0.95rem;
+        padding: 0 18px;
+        height: 38px;
+        min-width: 120px;
+      }
+      .icon-button:hover,
+      .text-button:hover {
+        border-color: #58a6ff;
+        background: rgba(88, 166, 255, 0.08);
+      }
+      .search-row {
+        display: flex;
+        margin-bottom: 16px;
+      }
+      .search-input {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 14px;
+        border: 1px solid #2b3848;
+        background: #0f1723;
+        color: #f5f5f5;
+        font-size: 0.95rem;
+      }
+      .search-input::placeholder {
+        color: #6e7681;
+      }
+      .device-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        overflow-y: auto;
+        height: calc(100vh - 320px);
+        padding-right: 4px;
+      }
+      .device-card {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        padding: 14px;
+        border-radius: 18px;
+        border: 1px solid #263142;
+        background: #111926;
+        color: inherit;
+        text-align: left;
+        cursor: pointer;
+        transition: border-color 0.18s ease, transform 0.18s ease, background 0.18s ease;
+      }
+      .device-card:hover,
+      .device-card.selected {
+        border-color: #58a6ff;
+        transform: translateY(-1px);
+      }
+      .device-icon {
+        width: 40px;
+        min-width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: #182135;
+        display: grid;
+        place-items: center;
+        color: #58a6ff;
+        font-size: 1.2rem;
+      }
+      .device-text {
+        min-width: 0;
+      }
+      .device-title {
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: 600;
+      }
+      .device-detail {
+        color: #8b949e;
+        font-size: 0.84rem;
+        margin-top: 4px;
+      }
+      .device-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 6px;
+        color: #8b949e;
+        font-size: 0.82rem;
+      }
+      .device-status .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: #34d058;
+      }
+      .device-status .status-dot.offline {
+        background: #f85149;
+      }
+      .preview-column {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        min-height: 0;
+        height: 100%;
+      }
+      .preview-card {
+        background: #111926;
+        border: 1px solid #263142;
+        border-radius: 24px;
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        min-height: 0;
+        flex: 1 1 0;
+      }
+      .preview-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+      .preview-title-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .preview-label {
+        color: #58a6ff;
+        font-size: 0.82rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .preview-title {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+      .preview-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #8b949e;
+        font-size: 0.9rem;
+      }
+      .status-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: #34d058;
+      }
+      .status-dot.disconnected {
+        background: #f85149;
+      }
+      .preview-image-wrap {
+        width: 100%;
+        flex: 1 1 0;
+        min-height: 0;
+        border-radius: 22px;
+        overflow: hidden;
+        background: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .preview-image-wrap img {
+        width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        display: block;
+      }
+      .preview-image-wrap.paused {
+        background: #000;
+      }
+      .preview-image-wrap.paused img {
+        display: none;
+      }
+      .preview-meta {
+        color: #8b949e;
+        font-size: 0.95rem;
+      }
+      .preview-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: rgba(88, 166, 255, 0.08);
+        color: #8b949e;
+        font-size: 0.82rem;
+      }
+      .log-card {
+        background: #112c48;
+        border: 1px solid rgba(88, 166, 255, 0.24);
+        border-radius: 26px;
+        padding: 20px;
+        overflow: hidden;
+        box-shadow: 0 32px 90px rgba(0, 0, 0, 0.38);
+        display: flex;
+        flex-direction: column;
+      }
+      .log-body {
+        overflow-x: auto;
+        overflow-y: auto;
+        width: 100%;
+        min-height: 140px;
+        max-height: 130PX;
+        height: 220px;
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 18px;
+        padding: 12px;
+      }
+      .log-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(88, 166, 255, 0.18);
+      }
+      .log-title {
+        margin: 0;
+        font-size: 1.18rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        color: #ffffff;
+      }
+      .log-actions {
+        display: flex;
+        gap: 10px;
+      }
+      .log-table {
+        min-width: 580px;
+        border-collapse: collapse;
+      }
+      .log-table th,
+      .log-table td {
+        padding: 12px 14px;
+        text-align: left;
+        color: #edf2ff;
+      }
+      .log-table th {
+        color: #8b949e;
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+      }
+      .log-table tr:not(:last-child) td {
+        border-bottom: 1px solid #212b37;
+      }
+      .log-empty {
+        padding: 18px;
+        color: #8b949e;
+        text-align: center;
+        border: 1px dashed #2b3848;
+        border-radius: 16px;
+        background: #0d131d;
+      }
+      .empty-state {
+        padding: 28px;
+        border-radius: 18px;
+        border: 1px dashed #2b3848;
+        color: #8b949e;
+        text-align: center;
+        background: #0d131d;
+      }
+      @media (max-width: 1120px) {
+        .app-shell {
+          grid-template-columns: 1fr;
+        }
+        .device-list {
+          max-height: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="panel">
+      <div class="app-shell">
+        <aside class="sidebar">
+          <div class="sidebar-header">
+            <div>
+              <h1 class="sidebar-title">PC Monitor</h1>
+              <div class="sidebar-subtitle" id="deviceCount">Computers</div>
+            </div>
+            <div class="sidebar-actions">
+              <button id="refreshButton" class="icon-button" title="Refresh list">↻</button>
+              <button id="addButton" class="icon-button" title="Add computer">+</button>
+            </div>
+          </div>
+          <div class="search-row">
+            <input id="deviceSearch" class="search-input" type="search" placeholder="Search computers..." />
+          </div>
+          <div id="deviceGrid" class="device-list"></div>
+        </aside>
+
+        <main class="preview-column">
+          <section class="preview-card">
+            <div class="preview-header">
+              <div class="preview-title-wrap">
+                <div class="preview-label">Screen monitoring</div>
+                <div class="preview-status"><span class="status-dot" id="statusDot"></span><span id="previewStatus">Connected</span></div>
+                <h2 class="preview-title" id="previewTitle">No device selected</h2>
+              </div>
+              <button id="disconnectButton" class="text-button" title="Pause">Pause</button>
+            </div>
+            <div id="previewImageWrap" class="preview-image-wrap">
+              <img id="previewImage" alt="Screen preview" src="" />
+            </div>
+            <div class="preview-meta" id="previewMeta">Select a device from the list to view its screen.</div>
+          </section>
+
+          <section class="log-card">
+            <div class="log-header">
+              <h3 class="log-title">Keyboard Event Monitoring</h3>
+              <div class="log-actions">
+                <button id="clearLogButton" class="icon-button" title="Clear log">🗑️</button>
+              </div>
+            </div>
+            <div id="logBody" class="log-body">
+              <div class="log-empty">No keyboard events yet. Use the arrow keys or Enter.</div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      const deviceGrid = document.getElementById('deviceGrid');
+      const deviceCount = document.getElementById('deviceCount');
+      const deviceSearch = document.getElementById('deviceSearch');
+      const refreshButton = document.getElementById('refreshButton');
+      const previewTitle = document.getElementById('previewTitle');
+      const previewStatus = document.getElementById('previewStatus');
+      const previewImage = document.getElementById('previewImage');
+      const previewMeta = document.getElementById('previewMeta');
+      const statusDot = document.getElementById('statusDot');
+      const disconnectButton = document.getElementById('disconnectButton');
+      const previewImageWrap = document.getElementById('previewImageWrap');
+      const logBody = document.getElementById('logBody');
+      const clearLogButton = document.getElementById('clearLogButton');
+
+      let lastPayload = null;
+      let selectedDeviceIndex = 0;
+      let pollingEnabled = true;
+      let isPaused = false;
+      let activeDeviceKey = null;
+      let pollTimer = null;
+      let devicesFilter = '';
+      let currentKeyboardEvents = [];
+      const demoDevices = [
+        {
+          device_id: 'DESKTOP-01',
+          safe_device_id: 'desktop-01',
+          source: '192.168.1.101',
+          timestamp: '2026-07-11T14:30:00',
+          status: 'Online',
+        },
+        {
+          device_id: 'OFFICE-PC',
+          safe_device_id: 'office-pc',
+          source: '192.168.1.102',
+          timestamp: '2026-07-11T14:28:15',
+          status: 'Online',
+        },
+        {
+          device_id: 'LAPTOP-DEV',
+          safe_device_id: 'laptop-dev',
+          source: '192.168.1.103',
+          timestamp: '2026-07-11T14:25:42',
+          status: 'Offline',
+        },
+      ];
+
+      function hasDemoMode() {
+        return window.location.search.includes('demo=true');
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function getDevices() {
+        const devices = lastPayload?.devices || [];
+        if (!devicesFilter) {
+          return devices;
+        }
+        return devices.filter((device) => {
+          const text = `${device.device_id || device.safe_device_id || ''} ${device.source || ''}`.toLowerCase();
+          return text.includes(devicesFilter.toLowerCase());
+        });
+      }
+
+      function updateDeviceCount(devices) {
+        deviceCount.textContent = `Computers (${devices.length})`;
+      }
+
+      function buildImageUrl(device) {
+        const url = device.image_url || '/latest';
+        const ts = device.timestamp ? encodeURIComponent(device.timestamp) : Date.now();
+        return url.includes('?') ? `${url}&ts=${ts}` : `${url}?ts=${ts}`;
+      }
+
+      function selectDevice(index) {
+        const devices = getDevices();
+        if (!devices.length) {
+          selectedDeviceIndex = 0;
+          updatePreview();
+          return;
+        }
+        selectedDeviceIndex = ((index % devices.length) + devices.length) % devices.length;
+        renderDevices();
+        updatePreview();
+      }
+
+      function formatDeviceTitle(selected) {
+        const deviceId = selected.device_id || selected.safe_device_id || 'Unknown device';
+        const source = selected.source || '';
+        const isIp = /^[\d.]+$/.test(source);
+        if (source && isIp) {
+          return `${deviceId} (${source})`;
+        }
+        return deviceId;
+      }
+
+      function getSelectedDevice() {
+        const devices = getDevices();
+        if (!devices.length) {
+          return null;
+        }
+        return devices[selectedDeviceIndex] || null;
+      }
+
+      function updatePreview() {
+        const devices = getDevices();
+        if (!devices.length) {
+          previewStatus.textContent = 'Disconnected';
+          statusDot.classList.add('disconnected');
+          statusDot.classList.remove('connected');
+          previewTitle.textContent = 'No device selected';
+          previewImage.src = '';
+          previewMeta.textContent = 'Waiting for screens to arrive.';
+          renderKeyboardLog([]);
+          return;
+        }
+        const selected = devices[selectedDeviceIndex];
+        activeDeviceKey = selected.device_id || selected.safe_device_id || null;
+        previewStatus.textContent = 'Connected';
+        statusDot.classList.add('connected');
+        statusDot.classList.remove('disconnected');
+        previewTitle.textContent = formatDeviceTitle(selected);
+        previewImage.src = buildImageUrl(selected);
+        const eventCount = Array.isArray(selected.keyboard_events) ? selected.keyboard_events.length : 0;
+        previewMeta.innerHTML = `Screen monitoring · ${selected.source || 'standalone-capture-app'} · ${selected.timestamp || 'Unknown time'} <span class="preview-badge">${eventCount} keyboard event${eventCount === 1 ? '' : 's'}</span>`;
+        renderKeyboardLog(selected.keyboard_events || []);
+      }
+
+      function renderDevices() {
+        const devices = getDevices();
+        deviceGrid.innerHTML = '';
+        updateDeviceCount(devices);
+
+        if (!devices.length) {
+          const empty = document.createElement('div');
+          empty.className = 'empty-state';
+          empty.textContent = 'No screens have been received yet.';
+          deviceGrid.appendChild(empty);
+          updatePreview();
+          return;
+        }
+
+        devices.forEach((device, index) => {
+          const deviceId = device.device_id || device.safe_device_id || 'unknown';
+          const card = document.createElement('button');
+          card.type = 'button';
+          card.className = 'device-card' + (index === selectedDeviceIndex ? ' selected' : '');
+          card.dataset.deviceId = deviceId;
+
+          card.addEventListener('click', () => {
+            selectedDeviceIndex = index;
+            renderDevices();
+            updatePreview();
+          });
+
+          const icon = document.createElement('div');
+          icon.className = 'device-icon';
+          icon.textContent = '🖥️';
+
+          const text = document.createElement('div');
+          text.className = 'device-text';
+
+          const title = document.createElement('div');
+          title.className = 'device-title';
+          title.textContent = deviceId;
+
+          const detail = document.createElement('div');
+          detail.className = 'device-detail';
+          detail.textContent = device.timestamp || 'No timestamp';
+
+          const eventDetail = document.createElement('div');
+          eventDetail.className = 'device-detail';
+          const eventCount = Array.isArray(device.keyboard_events) ? device.keyboard_events.length : 0;
+          eventDetail.textContent = `${eventCount} keyboard event${eventCount === 1 ? '' : 's'}`;
+
+          const status = document.createElement('div');
+          status.className = 'device-status';
+          const statusDot = document.createElement('span');
+          statusDot.className = 'status-dot';
+          const deviceStatus = (device.status || (device.timestamp ? 'Online' : 'Offline')).toString();
+          if (deviceStatus.toLowerCase() !== 'online' && deviceStatus.toLowerCase() !== 'connected') {
+            statusDot.classList.add('offline');
+          }
+          status.appendChild(statusDot);
+          status.appendChild(document.createTextNode(deviceStatus));
+
+          text.appendChild(title);
+          text.appendChild(detail);
+          text.appendChild(status);
+
+          card.appendChild(icon);
+          card.appendChild(text);
+          deviceGrid.appendChild(card);
+        });
+      }
+
+      function buildUpdateKey(devices) {
+        return devices
+          .map((device) => `${device.device_id || device.safe_device_id || 'unknown'}:${device.timestamp || ''}`)
+          .join('|');
+      }
+
+      function renderKeyboardLog(events) {
+        currentKeyboardEvents = Array.isArray(events) ? events : [];
+        if (!currentKeyboardEvents.length) {
+          logBody.innerHTML = '<div class="log-empty">No remote keyboard events yet.</div>';
+          return;
+        }
+
+        const rows = currentKeyboardEvents
+          .slice()
+          .reverse()
+          .map((event) => `
+            <tr>
+              <td>${event.time || ''}</td>
+              <td>${event.type || ''}</td>
+              <td>${event.key || ''}</td>
+            </tr>
+          `)
+          .join('');
+
+        logBody.innerHTML = `
+          <table class="log-table">
+            <thead>
+              <tr><th>Time</th><th>Type</th><th>Key</th></tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        `;
+      }
+
+      function setPausedState(paused) {
+        isPaused = paused;
+        pollingEnabled = !paused;
+        disconnectButton.textContent = paused ? 'Resume' : 'Pause';
+        disconnectButton.title = paused ? 'Resume' : 'Pause';
+        if (paused) {
+          previewStatus.textContent = 'Paused';
+          statusDot.classList.remove('connected');
+          statusDot.classList.add('disconnected');
+          previewImageWrap.classList.add('paused');
+          previewImage.src = '';
+          previewMeta.textContent = 'Monitoring paused. The screen preview is black.';
+          return;
+        }
+        previewImageWrap.classList.remove('paused');
+        previewStatus.textContent = 'Connected';
+        statusDot.classList.remove('disconnected');
+        statusDot.classList.add('connected');
+        previewMeta.textContent = 'Monitoring resumed.';
+        updatePreview();
+      }
+
+      async function pollOnce() {
+        if (!pollingEnabled || isPaused) {
+          return;
+        }
+        try {
+          const response = await fetch('/latest.json', { cache: 'no-store' });
+          if (!response.ok) {
+            throw new Error('Network error');
+          }
+          const data = await response.json();
+          let devices = data.devices || [];
+          if (!devices.length && hasDemoMode()) {
+            devices = demoDevices;
+          }
+          lastPayload = { devices };
+          renderDevices();
+          updatePreview();
+        } catch (error) {
+          setDisconnectedState();
+        }
+      }
+
+      deviceSearch.addEventListener('input', (event) => {
+        devicesFilter = event.target.value;
+        selectedDeviceIndex = 0;
+        renderDevices();
+        updatePreview();
+      });
+
+      refreshButton.addEventListener('click', () => {
+        if (isPaused) {
+          setPausedState(false);
+        }
+        pollingEnabled = true;
+        pollOnce();
+      });
+
+      disconnectButton.addEventListener('click', () => {
+        setPausedState(!isPaused);
+      });
+
+      clearLogButton.addEventListener('click', () => {
+        const selected = getSelectedDevice();
+        if (selected) {
+          selected.keyboard_events = [];
+          if (lastPayload?.devices) {
+            const deviceId = selected.device_id || selected.safe_device_id;
+            const matchingDevice = lastPayload.devices.find((item) => (item.device_id || item.safe_device_id) === deviceId);
+            if (matchingDevice) {
+              matchingDevice.keyboard_events = [];
+            }
+          }
+        }
+        currentKeyboardEvents = [];
+        renderKeyboardLog([]);
+        updatePreview();
+      });
+
+      renderKeyboardLog();
+      pollOnce();
+      pollTimer = setInterval(() => {
+        if (pollingEnabled) {
+          pollOnce();
+        }
+      }, 1200);
+    </script>
+  </body>
+</html>
