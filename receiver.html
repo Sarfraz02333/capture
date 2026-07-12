@@ -415,6 +415,7 @@
               <img id="previewImage" alt="Screen preview" src="" />
             </div>
             <div class="preview-meta" id="previewMeta">Select a device from the list to view its screen.</div>
+                <div id="debugInfo" style="color:#8b949e;margin-top:8px;font-size:0.9rem">Debugger: no data</div>
           </section>
 
           <section class="log-card">
@@ -629,8 +630,15 @@
         statusDot.classList.remove('offline');
         previewTitle.textContent = formatDeviceTitle(selected);
         previewImage.src = buildImageUrl(selected);
-        const eventCount = Array.isArray(selected.keyboard_events) ? selected.keyboard_events.filter(e => e && e.type && String(e.type).toLowerCase() === 'press').length : 0;
+        const eventCount = Array.isArray(selected.keyboard_events) ? selected.keyboard_events.filter(e => e && e.type && (String(e.type).toLowerCase() === 'press' || String(e.type).toLowerCase() === 'keyup' || String(e.type).toLowerCase() === 'key')).length : 0;
         previewMeta.innerHTML = `Screen monitoring · ${selected.source || 'standalone-capture-app'} · ${selected.timestamp || 'Unknown time'} <span class="preview-badge">${eventCount} keyboard event${eventCount === 1 ? '' : 's'}</span>`;
+        const debugInfo = document.getElementById('debugInfo');
+        try {
+          debugInfo.textContent = `Keyboard events total: ${Array.isArray(selected.keyboard_events) ? selected.keyboard_events.length : 0} (press filtered: ${eventCount})`;
+        } catch (e) {
+          // ignore
+        }
+        console.log('updatePreview keyboard events:', selected.keyboard_events && selected.keyboard_events.length, 'pressCount:', eventCount);
         renderKeyboardLog(selected.keyboard_events || []);
       }
 
@@ -720,7 +728,7 @@
           const ev = original[i];
           if (!ev || !ev.type) continue;
           const t = String(ev.type).toLowerCase();
-          if (t === 'press' || t === 'key') {
+          if (t === 'press' || t === 'key' || t === 'keyup') {
             filtered.push(ev);
             indices.push(i);
           }

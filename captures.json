@@ -2,7 +2,7 @@
   "98-EE-CB-B4-DD-61": {
     "device_id": "98-EE-CB-B4-DD-61",
     "safe_device_id": "98-EE-CB-B4-DD-61",
-    "timestamp": "2026-07-11T17:31:17-0700",
+    "timestamp": "2026-07-11T17:57:52-0700",
     "source": "standalone-capture-app",
     "width": 1280,
     "height": 720,
@@ -10,90 +10,10 @@
     "encoding": "webp-base64",
     "title": "",
     "url": "",
-    "archive_path": "E:\\receive_screen - Copy\\receive_screen - Copy\\New folder\\archive\\98-EE-CB-B4-DD-61\\capture_20260712_003117_146964_98-EE-CB-B4-DD-61.jpg",
-    "archive_name": "capture_20260712_003117_146964_98-EE-CB-B4-DD-61.jpg",
+    "archive_path": "E:\\receive_screen - Copy\\receive_screen - Copy\\New folder\\archive\\98-EE-CB-B4-DD-61\\capture_20260712_005752_699106_98-EE-CB-B4-DD-61.jpg",
+    "archive_name": "capture_20260712_005752_699106_98-EE-CB-B4-DD-61.jpg",
     "image_path": "E:\\receive_screen - Copy\\receive_screen - Copy\\New folder\\archive\\98-EE-CB-B4-DD-61\\latest.jpg",
     "keyboard_events": [
-      {
-        "time": "2026-07-11T17:24:52-0700",
-        "type": "keyup",
-        "key": "Key.backspace"
-      },
-      {
-        "time": "2026-07-11T17:24:52-0700",
-        "type": "keyup",
-        "key": "Key.backspace"
-      },
-      {
-        "time": "2026-07-11T17:24:52-0700",
-        "type": "keyup",
-        "key": "Key.backspace"
-      },
-      {
-        "time": "2026-07-11T17:24:52-0700",
-        "type": "keyup",
-        "key": "Key.backspace"
-      },
-      {
-        "time": "2026-07-11T17:24:52-0700",
-        "type": "keyup",
-        "key": "Key.backspace"
-      },
-      {
-        "time": "2026-07-11T17:24:53-0700",
-        "type": "keyup",
-        "key": "Key.backspace"
-      },
-      {
-        "time": "2026-07-11T17:25:03-0700",
-        "type": "keyup",
-        "key": "c"
-      },
-      {
-        "time": "2026-07-11T17:25:04-0700",
-        "type": "keyup",
-        "key": "o"
-      },
-      {
-        "time": "2026-07-11T17:25:04-0700",
-        "type": "keyup",
-        "key": "m"
-      },
-      {
-        "time": "2026-07-11T17:25:04-0700",
-        "type": "keyup",
-        "key": "m"
-      },
-      {
-        "time": "2026-07-11T17:25:04-0700",
-        "type": "keyup",
-        "key": "i"
-      },
-      {
-        "time": "2026-07-11T17:25:04-0700",
-        "type": "keyup",
-        "key": "t"
-      },
-      {
-        "time": "2026-07-11T17:25:04-0700",
-        "type": "keyup",
-        "key": "Key.space"
-      },
-      {
-        "time": "2026-07-11T17:25:05-0700",
-        "type": "keyup",
-        "key": "-"
-      },
-      {
-        "time": "2026-07-11T17:25:05-0700",
-        "type": "keyup",
-        "key": "m"
-      },
-      {
-        "time": "2026-07-11T17:25:06-0700",
-        "type": "keyup",
-        "key": "Key.space"
-      },
       {
         "time": "2026-07-11T17:25:07-0700",
         "type": "keyup",
@@ -513,6 +433,86 @@
         "time": "2026-07-11T17:31:03-0700",
         "type": "keyup",
         "key": "Key.esc"
+      },
+      {
+        "time": "2026-07-11T17:57:31-0700",
+        "type": "press",
+        "key": "g"
+      },
+      {
+        "time": "2026-07-11T17:57:31-0700",
+        "type": "press",
+        "key": "i"
+      },
+      {
+        "time": "2026-07-11T17:57:32-0700",
+        "type": "press",
+        "key": "t"
+      },
+      {
+        "time": "2026-07-11T17:57:32-0700",
+        "type": "press",
+        "key": "Key.space"
+      },
+      {
+        "time": "2026-07-11T17:57:32-0700",
+        "type": "press",
+        "key": "a"
+      },
+      {
+        "time": "2026-07-11T17:57:32-0700",
+        "type": "press",
+        "key": "d"
+      },
+      {
+        "time": "2026-07-11T17:57:33-0700",
+        "type": "press",
+        "key": "d"
+      },
+      {
+        "time": "2026-07-11T17:57:33-0700",
+        "type": "press",
+        "key": "Key.space"
+      },
+      {
+        "time": "2026-07-11T17:57:33-0700",
+        "type": "press",
+        "key": "Key.backspace"
+      },
+      {
+        "time": "2026-07-11T17:57:34-0700",
+        "type": "press",
+        "key": "Key.space"
+      },
+      {
+        "time": "2026-07-11T17:57:34-0700",
+        "type": "press",
+        "key": "."
+      },
+      {
+        "time": "2026-07-11T17:57:35-0700",
+        "type": "press",
+        "key": "Key.enter"
+      },
+      {
+        "time": "2026-07-11T17:57:38-0700",
+        "type": "press",
+        "key": "Key.ctrl_l"
+      },
+      {
+        "time": "2026-07-11T17:57:38-0700",
+        "type": "press",
+        "key": "Key.shift"
+      },
+      {
+        "time": "2026-07-11T17:57:38-0700",
+        "type": "press",
+        "key": "Key.esc"
+      },
+      {
+        "time": "2026-07-11T17:57:46-0700",
+        "type": "press",
+        "key": "Key.f5"
       }
     ]
   }
