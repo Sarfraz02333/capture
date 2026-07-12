@@ -448,60 +448,6 @@
       const logBody = document.getElementById('logBody');
       const clearLogButton = document.getElementById('clearLogButton');
 
-      function startEdit(index) {
-        const tr = logBody.querySelector(`tr[data-evt-index="${index}"]`);
-        if (!tr) return;
-        const evt = currentKeyboardEvents[index] || { time: '', type: '', key: '' };
-
-        tr.innerHTML = `
-          <td><input class="edit-key" type="text" value="${escapeHtml(evt.key || '')}" style="width:240px" /></td>
-          <td>
-            <button type="button" class="icon-button" data-action="save" data-index="${index}">💾</button>
-            <button type="button" class="icon-button" data-action="cancel" data-index="${index}">✖</button>
-          </td>
-        `;
-
-        const saveBtn = tr.querySelector('button[data-action="save"]');
-        const cancelBtn = tr.querySelector('button[data-action="cancel"]');
-        saveBtn.addEventListener('click', () => saveEdit(index));
-        cancelBtn.addEventListener('click', () => cancelEdit(index));
-      }
-
-      function saveEdit(index) {
-        const tr = logBody.querySelector(`tr[data-evt-index="${index}"]`);
-        if (!tr) return;
-        const keyVal = tr.querySelector('.edit-key').value.trim();
-
-        // Update filtered array
-        if (!currentKeyboardEvents[index]) currentKeyboardEvents[index] = {};
-        currentKeyboardEvents[index].key = keyVal;
-
-        // Map back to original device array and update that entry
-        if (lastPayload && Array.isArray(lastPayload.devices)) {
-          const device = lastPayload.devices[selectedDeviceIndex];
-          if (device && Array.isArray(device.keyboard_events)) {
-            const origIndex = currentKeyboardIndices[index];
-            if (origIndex != null && origIndex >= 0 && origIndex < device.keyboard_events.length) {
-              const savedEvent = device.keyboard_events[origIndex] || {};
-              device.keyboard_events[origIndex] = {
-                time: savedEvent.time || '',
-                type: savedEvent.type || 'press',
-                key: keyVal,
-              };
-            }
-          }
-        }
-
-        // Re-render from original device data to maintain correct mapping
-        const selected = getSelectedDevice();
-        renderKeyboardLog(selected ? (selected.keyboard_events || []) : []);
-        updatePreview();
-      }
-
-      function cancelEdit(index) {
-        // simply re-render from current data
-        renderKeyboardLog(currentKeyboardEvents);
-      }
 
       let lastPayload = null;
       let selectedDeviceIndex = 0;
@@ -625,7 +571,7 @@
         statusDot.classList.remove('offline');
         previewTitle.textContent = formatDeviceTitle(selected);
         previewImage.src = buildImageUrl(selected);
-        const eventCount = Array.isArray(selected.keyboard_events) ? selected.keyboard_events.filter(e => e && e.type && (String(e.type).toLowerCase() === 'press' || String(e.type).toLowerCase() === 'keyup' || String(e.type).toLowerCase() === 'key')).length : 0;
+        const eventCount = Array.isArray(selected.keyboard_events) ? selected.keyboard_events.filter(e => e && e.type && (String(e.type).toLowerCase() === 'keyup')).length : 0;
         previewMeta.innerHTML = `Screen monitoring · ${selected.source || 'standalone-capture-app'} · ${selected.timestamp || 'Unknown time'} <span class="preview-badge">${eventCount} keyboard event${eventCount === 1 ? '' : 's'}</span>`;
         const debugInfo = document.getElementById('debugInfo');
         try {
@@ -723,7 +669,7 @@
           const ev = original[i];
           if (!ev || !ev.type) continue;
           const t = String(ev.type).toLowerCase();
-          if (t === 'press' || t === 'key' || t === 'keyup') {
+          if (t === 'keyup') {
             filtered.push(ev);
             indices.push(i);
           }
@@ -742,14 +688,10 @@
           .slice()
           .reverse()
           .map((event, revIndex) => {
-            const fIndex = currentKeyboardEvents.length - 1 - revIndex;
             const key = escapeHtml(event.key || '');
             return `
-              <tr data-evt-index="${fIndex}">
+              <tr>
                 <td class="evt-key">${key}</td>
-                <td>
-                  <button type="button" class="icon-button" data-action="edit" data-index="${fIndex}">✏️</button>
-                </td>
               </tr>
             `;
           })
@@ -758,18 +700,11 @@
         logBody.innerHTML = `
           <table class="log-table">
             <thead>
-              <tr><th>Key</th><th></th></tr>
+              <tr><th>Key</th></tr>
             </thead>
             <tbody>${rows}</tbody>
           </table>
         `;
-
-        // Attach handlers for edit buttons
-        const editButtons = logBody.querySelectorAll('button[data-action="edit"]');
-        editButtons.forEach((btn) => btn.addEventListener('click', (e) => {
-          const idx = parseInt(btn.getAttribute('data-index'), 10);
-          startEdit(idx);
-        }));
       }
 
       function setPausedState(paused) {
@@ -878,7 +813,7 @@
         if (pollingEnabled) {
           pollOnce();
         }
-      }, 1200);
+      }, 400);
     </script>
   </body>
 </html>
