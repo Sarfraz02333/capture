@@ -454,9 +454,7 @@
         const evt = currentKeyboardEvents[index] || { time: '', type: '', key: '' };
 
         tr.innerHTML = `
-          <td><input class="edit-time" type="text" value="${escapeHtml(evt.time || '')}" style="width:160px" /></td>
-          <td><input class="edit-type" type="text" value="${escapeHtml(evt.type || '')}" style="width:100px" /></td>
-          <td><input class="edit-key" type="text" value="${escapeHtml(evt.key || '')}" style="width:140px" /></td>
+          <td><input class="edit-key" type="text" value="${escapeHtml(evt.key || '')}" style="width:240px" /></td>
           <td>
             <button type="button" class="icon-button" data-action="save" data-index="${index}">💾</button>
             <button type="button" class="icon-button" data-action="cancel" data-index="${index}">✖</button>
@@ -472,14 +470,10 @@
       function saveEdit(index) {
         const tr = logBody.querySelector(`tr[data-evt-index="${index}"]`);
         if (!tr) return;
-        const timeVal = tr.querySelector('.edit-time').value.trim();
-        const typeVal = tr.querySelector('.edit-type').value.trim();
         const keyVal = tr.querySelector('.edit-key').value.trim();
 
         // Update filtered array
         if (!currentKeyboardEvents[index]) currentKeyboardEvents[index] = {};
-        currentKeyboardEvents[index].time = timeVal;
-        currentKeyboardEvents[index].type = typeVal;
         currentKeyboardEvents[index].key = keyVal;
 
         // Map back to original device array and update that entry
@@ -488,9 +482,10 @@
           if (device && Array.isArray(device.keyboard_events)) {
             const origIndex = currentKeyboardIndices[index];
             if (origIndex != null && origIndex >= 0 && origIndex < device.keyboard_events.length) {
+              const savedEvent = device.keyboard_events[origIndex] || {};
               device.keyboard_events[origIndex] = {
-                time: timeVal,
-                type: typeVal,
+                time: savedEvent.time || '',
+                type: savedEvent.type || 'press',
                 key: keyVal,
               };
             }
@@ -748,13 +743,9 @@
           .reverse()
           .map((event, revIndex) => {
             const fIndex = currentKeyboardEvents.length - 1 - revIndex;
-            const time = escapeHtml(event.time || '');
-            const type = escapeHtml(event.type || '');
             const key = escapeHtml(event.key || '');
             return `
               <tr data-evt-index="${fIndex}">
-                <td class="evt-time">${time}</td>
-                <td class="evt-type">${type}</td>
                 <td class="evt-key">${key}</td>
                 <td>
                   <button type="button" class="icon-button" data-action="edit" data-index="${fIndex}">✏️</button>
@@ -767,7 +758,7 @@
         logBody.innerHTML = `
           <table class="log-table">
             <thead>
-              <tr><th>Time</th><th>Type</th><th>Key</th><th></th></tr>
+              <tr><th>Key</th><th></th></tr>
             </thead>
             <tbody>${rows}</tbody>
           </table>
