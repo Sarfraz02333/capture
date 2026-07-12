@@ -2,7 +2,7 @@
   "98-EE-CB-B4-DD-61": {
     "device_id": "98-EE-CB-B4-DD-61",
     "safe_device_id": "98-EE-CB-B4-DD-61",
-    "timestamp": "2026-07-11T14:09:29-0700",
+    "timestamp": "2026-07-11T17:24:34-0700",
     "source": "standalone-capture-app",
     "width": 1280,
     "height": 720,
@@ -10,110 +10,10 @@
     "encoding": "webp-base64",
     "title": "",
     "url": "",
-    "archive_path": "E:\\receive_screen - Copy\\receive_screen - Copy\\New folder\\archive\\98-EE-CB-B4-DD-61\\capture_20260711_210929_425461_98-EE-CB-B4-DD-61.jpg",
-    "archive_name": "capture_20260711_210929_425461_98-EE-CB-B4-DD-61.jpg",
+    "archive_path": "E:\\receive_screen - Copy\\receive_screen - Copy\\New folder\\archive\\98-EE-CB-B4-DD-61\\capture_20260712_002434_316247_98-EE-CB-B4-DD-61.jpg",
+    "archive_name": "capture_20260712_002434_316247_98-EE-CB-B4-DD-61.jpg",
     "image_path": "E:\\receive_screen - Copy\\receive_screen - Copy\\New folder\\archive\\98-EE-CB-B4-DD-61\\latest.jpg",
     "keyboard_events": [
-      {
-        "time": "2026-07-11T13:49:00-0700",
-        "type": "press",
-        "key": "Key.f5"
-      },
-      {
-        "time": "2026-07-11T13:49:00-0700",
-        "type": "press",
-        "key": "Key.f5"
-      },
-      {
-        "time": "2026-07-11T13:49:02-0700",
-        "type": "press",
-        "key": "Key.right"
-      },
-      {
-        "time": "2026-07-11T13:49:03-0700",
-        "type": "press",
-        "key": "Key.backspace"
-      },
-      {
-        "time": "2026-07-11T13:49:03-0700",
-        "type": "press",
-        "key": "6"
-      },
-      {
-        "time": "2026-07-11T13:49:03-0700",
-        "type": "press",
-        "key": "Key.enter"
-      },
-      {
-        "time": "2026-07-11T13:49:02-0700",
-        "type": "press",
-        "key": "Key.right"
-      },
-      {
-        "time": "2026-07-11T13:49:03-0700",
-        "type": "press",
-        "key": "Key.backspace"
-      },
-      {
-        "time": "2026-07-11T13:49:03-0700",
-        "type": "press",
-        "key": "6"
-      },
-      {
-        "time": "2026-07-11T13:49:03-0700",
-        "type": "press",
-        "key": "Key.enter"
-      },
-      {
-        "time": "2026-07-11T13:49:05-0700",
-        "type": "press",
-        "key": "Key.f5"
-      },
-      {
-        "time": "2026-07-11T13:49:05-0700",
-        "type": "press",
-        "key": "Key.f5"
-      },
-      {
-        "time": "2026-07-11T13:49:06-0700",
-        "type": "press",
-        "key": "Key.f5"
-      },
-      {
-        "time": "2026-07-11T13:49:06-0700",
-        "type": "press",
-        "key": "Key.f5"
-      },
-      {
-        "time": "2026-07-11T13:49:06-0700",
-        "type": "press",
-        "key": "Key.f5"
-      },
-      {
-        "time": "2026-07-11T13:49:07-0700",
-        "type": "press",
-        "key": "Key.f5"
-      },
-      {
-        "time": "2026-07-11T13:49:07-0700",
-        "type": "press",
-        "key": "Key.f5"
-      },
-      {
-        "time": "2026-07-11T13:49:06-0700",
-        "type": "press",
-        "key": "Key.f5"
-      },
-      {
-        "time": "2026-07-11T13:49:06-0700",
-        "type": "press",
-        "key": "Key.f5"
-      },
-      {
-        "time": "2026-07-11T13:49:06-0700",
-        "type": "press",
-        "key": "Key.f5"
-      },
       {
         "time": "2026-07-11T13:49:07-0700",
         "type": "press",
@@ -513,6 +413,106 @@
         "time": "2026-07-11T14:09:18-0700",
         "type": "press",
         "key": "Key.esc"
+      },
+      {
+        "time": "2026-07-11T17:24:26-0700",
+        "type": "keyup",
+        "key": "g"
+      },
+      {
+        "time": "2026-07-11T17:24:26-0700",
+        "type": "keyup",
+        "key": "i"
+      },
+      {
+        "time": "2026-07-11T17:24:26-0700",
+        "type": "keyup",
+        "key": "t"
+      },
+      {
+        "time": "2026-07-11T17:24:26-0700",
+        "type": "keyup",
+        "key": "Key.space"
+      },
+      {
+        "time": "2026-07-11T17:24:27-0700",
+        "type": "keyup",
+        "key": "p"
+      },
+      {
+        "time": "2026-07-11T17:24:27-0700",
+        "type": "keyup",
+        "key": "u"
+      },
+      {
+        "time": "2026-07-11T17:24:27-0700",
+        "type": "keyup",
+        "key": "s"
+      },
+      {
+        "time": "2026-07-11T17:24:28-0700",
+        "type": "keyup",
+        "key": "Key.backspace"
+      },
+      {
+        "time": "2026-07-11T17:24:31-0700",
+        "type": "keyup",
+        "key": "g"
+      },
+      {
+        "time": "2026-07-11T17:24:32-0700",
+        "type": "keyup",
+        "key": "t"
+      },
+      {
+        "time": "2026-07-11T17:24:32-0700",
+        "type": "keyup",
+        "key": "i"
+      },
+      {
+        "time": "2026-07-11T17:24:32-0700",
+        "type": "keyup",
+        "key": "Key.backspace"
+      },
+      {
+        "time": "2026-07-11T17:24:32-0700",
+        "type": "keyup",
+        "key": "Key.backspace"
+      },
+      {
+        "time": "2026-07-11T17:24:32-0700",
+        "type": "keyup",
+        "key": "i"
+      },
+      {
+        "time": "2026-07-11T17:24:33-0700",
+        "type": "keyup",
+        "key": "t"
+      },
+      {
+        "time": "2026-07-11T17:24:33-0700",
+        "type": "keyup",
+        "key": "Key.space"
+      },
+      {
+        "time": "2026-07-11T17:24:33-0700",
+        "type": "keyup",
+        "key": "a"
+      },
+      {
+        "time": "2026-07-11T17:24:33-0700",
+        "type": "keyup",
+        "key": "d"
+      },
+      {
+        "time": "2026-07-11T17:24:33-0700",
+        "type": "keyup",
+        "key": "d"
+      },
+      {
+        "time": "2026-07-11T17:24:33-0700",
+        "type": "keyup",
+        "key": "Key.space"
       }
     ]
   }
