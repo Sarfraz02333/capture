@@ -14,11 +14,13 @@
       }
       html,
       body {
-        margin: 0;
-        min-height: 100vh;
-        height: 100%;
-        overflow: hidden;
-      }
+          currentKeyboardEvents = Array.isArray(events) ? events : [];
+          if (!currentKeyboardEvents.length) {
+            logBody.innerHTML = '<div class="log-empty">No remote keyboard events yet.</div>';
+            return;
+          }
+
+          // Render editable rows. We show newest first.
       body {
         background: #090b10;
         color: #f5f5f5;
