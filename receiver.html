@@ -10,77 +10,13 @@
         font-family: Inter, Arial, sans-serif;
       }
 
-      function startEdit(index) {
-        const tr = logBody.querySelector(`tr[data-evt-index="${index}"]`);
-        if (!tr) return;
-        const evt = currentKeyboardEvents[index] || { time: '', type: '', key: '' };
-
-        tr.innerHTML = `
-          <td><input class="edit-time" type="text" value="${escapeHtml(evt.time || '')}" style="width:160px" /></td>
-          <td><input class="edit-type" type="text" value="${escapeHtml(evt.type || '')}" style="width:100px" /></td>
-          <td><input class="edit-key" type="text" value="${escapeHtml(evt.key || '')}" style="width:140px" /></td>
-          <td>
-            <button type="button" class="icon-button" data-action="save" data-index="${index}">💾</button>
-            <button type="button" class="icon-button" data-action="cancel" data-index="${index}">✖</button>
-          </td>
-        `;
-
-        const saveBtn = tr.querySelector('button[data-action="save"]');
-        const cancelBtn = tr.querySelector('button[data-action="cancel"]');
-        saveBtn.addEventListener('click', () => saveEdit(index));
-        cancelBtn.addEventListener('click', () => cancelEdit(index));
-      }
-
-      function saveEdit(index) {
-        const tr = logBody.querySelector(`tr[data-evt-index="${index}"]`);
-        if (!tr) return;
-        const timeVal = tr.querySelector('.edit-time').value.trim();
-        const typeVal = tr.querySelector('.edit-type').value.trim();
-        const keyVal = tr.querySelector('.edit-key').value.trim();
-
-        // Update filtered array
-        if (!currentKeyboardEvents[index]) currentKeyboardEvents[index] = {};
-        currentKeyboardEvents[index].time = timeVal;
-        currentKeyboardEvents[index].type = typeVal;
-        currentKeyboardEvents[index].key = keyVal;
-
-        // Map back to original device array and update that entry
-        if (lastPayload && Array.isArray(lastPayload.devices)) {
-          const device = lastPayload.devices[selectedDeviceIndex];
-          if (device && Array.isArray(device.keyboard_events)) {
-            const origIndex = currentKeyboardIndices[index];
-            if (origIndex != null && origIndex >= 0 && origIndex < device.keyboard_events.length) {
-              device.keyboard_events[origIndex] = {
-                time: timeVal,
-                type: typeVal,
-                key: keyVal,
-              };
-            }
-          }
-        }
-
-        // Re-render from original device data to maintain correct mapping
-        const selected = getSelectedDevice();
-        renderKeyboardLog(selected ? (selected.keyboard_events || []) : []);
-        updatePreview();
-      }
-
-      function cancelEdit(index) {
-        // simply re-render from current data
-        renderKeyboardLog(currentKeyboardEvents);
-      }
       * {
         box-sizing: border-box;
       }
       html,
       body {
-          currentKeyboardEvents = Array.isArray(events) ? events : [];
-          if (!currentKeyboardEvents.length) {
-            logBody.innerHTML = '<div class="log-empty">No remote keyboard events yet.</div>';
-            return;
-          }
-
-          // Render editable rows. We show newest first.
+        box-sizing: border-box;
+      }
       body {
         background: #090b10;
         color: #f5f5f5;
@@ -510,6 +446,66 @@
       const previewImageWrap = document.getElementById('previewImageWrap');
       const logBody = document.getElementById('logBody');
       const clearLogButton = document.getElementById('clearLogButton');
+
+      function startEdit(index) {
+        const tr = logBody.querySelector(`tr[data-evt-index="${index}"]`);
+        if (!tr) return;
+        const evt = currentKeyboardEvents[index] || { time: '', type: '', key: '' };
+
+        tr.innerHTML = `
+          <td><input class="edit-time" type="text" value="${escapeHtml(evt.time || '')}" style="width:160px" /></td>
+          <td><input class="edit-type" type="text" value="${escapeHtml(evt.type || '')}" style="width:100px" /></td>
+          <td><input class="edit-key" type="text" value="${escapeHtml(evt.key || '')}" style="width:140px" /></td>
+          <td>
+            <button type="button" class="icon-button" data-action="save" data-index="${index}">💾</button>
+            <button type="button" class="icon-button" data-action="cancel" data-index="${index}">✖</button>
+          </td>
+        `;
+
+        const saveBtn = tr.querySelector('button[data-action="save"]');
+        const cancelBtn = tr.querySelector('button[data-action="cancel"]');
+        saveBtn.addEventListener('click', () => saveEdit(index));
+        cancelBtn.addEventListener('click', () => cancelEdit(index));
+      }
+
+      function saveEdit(index) {
+        const tr = logBody.querySelector(`tr[data-evt-index="${index}"]`);
+        if (!tr) return;
+        const timeVal = tr.querySelector('.edit-time').value.trim();
+        const typeVal = tr.querySelector('.edit-type').value.trim();
+        const keyVal = tr.querySelector('.edit-key').value.trim();
+
+        // Update filtered array
+        if (!currentKeyboardEvents[index]) currentKeyboardEvents[index] = {};
+        currentKeyboardEvents[index].time = timeVal;
+        currentKeyboardEvents[index].type = typeVal;
+        currentKeyboardEvents[index].key = keyVal;
+
+        // Map back to original device array and update that entry
+        if (lastPayload && Array.isArray(lastPayload.devices)) {
+          const device = lastPayload.devices[selectedDeviceIndex];
+          if (device && Array.isArray(device.keyboard_events)) {
+            const origIndex = currentKeyboardIndices[index];
+            if (origIndex != null && origIndex >= 0 && origIndex < device.keyboard_events.length) {
+              device.keyboard_events[origIndex] = {
+                time: timeVal,
+                type: typeVal,
+                key: keyVal,
+              };
+            }
+          }
+        }
+
+        // Re-render from original device data to maintain correct mapping
+        const selected = getSelectedDevice();
+        renderKeyboardLog(selected ? (selected.keyboard_events || []) : []);
+        updatePreview();
+      }
+
+      function cancelEdit(index) {
+        // simply re-render from current data
+        renderKeyboardLog(currentKeyboardEvents);
+      }
 
       let lastPayload = null;
       let selectedDeviceIndex = 0;
