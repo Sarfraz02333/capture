@@ -767,7 +767,7 @@
 
       function renderKeyboardLog(events) {
         const original = Array.isArray(events) ? events : [];
-        const filtered = original.filter((ev) => ev && ev.type && ['keyup', 'key', 'press'].includes(String(ev.type).toLowerCase()));
+        const filtered = original.filter((ev) => ev && ev.type && ['keyup', 'key'].includes(String(ev.type).toLowerCase()));
         currentKeyboardEvents = filtered;
         currentKeyboardIndices = filtered.map((_, idx) => idx);
 
