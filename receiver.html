@@ -280,99 +280,118 @@
         font-size: 0.82rem;
       }
       .log-card {
-        background: #112c48;
-        border: 1px solid rgba(88, 166, 255, 0.24);
+        background: #111726;
+        border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 26px;
         padding: 20px;
         overflow: hidden;
-        box-shadow: 0 32px 90px rgba(0, 0, 0, 0.38);
+        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
         display: flex;
         flex-direction: column;
       }
       .log-body {
         width: 100%;
-        min-height: 140px;
-        max-height: 220px;
-        height: 220px;
-        background: rgba(255, 255, 255, 0.04);
+        min-height: 220px;
+        max-height: 320px;
+        height: 320px;
+        background: #ffffff;
         border-radius: 18px;
-        padding: 12px;
+        padding: 14px;
+        border: 1px solid #d1d5db;
+        box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.08);
+        overflow: hidden;
       }
-      .log-textarea {
-        width: 100%;
-        height: 100%;
-        min-height: 140px;
-        max-height: 220px;
-        background: transparent;
-        border: none;
-        color: #cfe8ff;
-        resize: none;
-        outline: none;
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-        font-size: 0.92rem;
-        line-height: 1.5;
-        padding: 0;
-      }
-      .log-textarea::placeholder {
-        color: #8b949e;
-      }
-      .log-header {
+      .keyboard-log-toolbar {
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 12px;
-        margin-bottom: 18px;
-        padding-bottom: 12px;
-        border-bottom: 1px solid rgba(88, 166, 255, 0.18);
+        margin-bottom: 14px;
       }
-      .log-title {
-        margin: 0;
-        font-size: 1.18rem;
-        font-weight: 700;
-        letter-spacing: 0.02em;
-        color: #ffffff;
-      }
-      .log-actions {
+      .keyboard-log-actions {
         display: flex;
         gap: 10px;
+        align-items: center;
       }
-      .log-table {
-        min-width: 580px;
-        border-collapse: collapse;
-      }
-      .log-table th,
-      .log-table td {
-        padding: 12px 14px;
-        text-align: left;
-        color: #edf2ff;
-      }
-      .log-table th {
-        color: #8b949e;
-        font-size: 0.85rem;
+      .keyboard-log-action {
+        appearance: none;
+        border: 1px solid #cbd5e1;
+        border-radius: 12px;
+        background: #f8fafc;
+        color: #0f172a;
+        cursor: pointer;
         font-weight: 600;
-        letter-spacing: 0.01em;
+        padding: 8px 14px;
+        transition: background 150ms ease, border-color 150ms ease;
       }
-      .log-table tr:not(:last-child) td {
-        border-bottom: 1px solid #212b37;
+      .keyboard-log-action:hover {
+        background: #e2e8f0;
+        border-color: #94a3b8;
       }
-      .evt-time {
-        width: 130px;
-        color: #8b949e;
-        white-space: nowrap;
+      .keyboard-log-checkbox {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #475569;
+        font-size: 0.9rem;
       }
-      .evt-key {
-        color: #cfe8ff;
+      .keyboard-log-content {
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 12px;
+        background: #ffffff;
+        color: #0f172a;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+        font-size: 0.92rem;
+        line-height: 1.5;
+        white-space: pre-wrap;
+        word-break: break-word;
+        outline: none;
+        border-radius: 14px;
       }
-      .evt-log-row:hover {
-        background: rgba(255, 255, 255, 0.03);
+      .keyboard-log-content::-webkit-scrollbar {
+        width: 12px;
+      }
+      .keyboard-log-content::-webkit-scrollbar-thumb {
+        background: rgba(15, 23, 42, 0.12);
+        border-radius: 999px;
+      }
+      .keyboard-log-content::-webkit-scrollbar-track {
+        background: rgba(148, 163, 184, 0.08);
+      }
+      .log-line {
+        display: block;
+      }
+      .timestamp {
+        color: #6b7280;
+      }
+      .key-label {
+        display: inline-flex;
+        align-items: center;
+        padding: 0 0.45em;
+        margin: 0 0.15em;
+        border-radius: 999px;
+        font-size: 0.88rem;
+        font-weight: 700;
+        line-height: 1.4;
+      }
+      .key-enter { background: #dcfce7; color: #166534; }
+      .key-backspace { background: #fee2e2; color: #991b1b; }
+      .key-ctrl { background: #dbeafe; color: #1d4ed8; }
+      .key-tab { background: #ffedd5; color: #9a3412; }
+      .key-escape, .key-delete, .key-shift, .key-alt, .key-capslock, .key-fn, .key-arrow {
+        background: #f3f4f6;
+        color: #334155;
       }
       .log-empty {
         padding: 18px;
-        color: #8b949e;
+        color: #475569;
         text-align: center;
-        border: 1px dashed #2b3848;
+        border: 1px dashed #cbd5e1;
         border-radius: 16px;
-        background: #0d131d;
+        background: #f8fafc;
       }
       .empty-state {
         padding: 28px;
@@ -432,12 +451,18 @@
           <section class="log-card">
             <div class="log-header">
               <h3 class="log-title">Keyboard Event Monitoring</h3>
-              <div class="log-actions">
-                <button id="clearLogButton" class="icon-button" title="Clear log">🗑️</button>
+              <div class="log-actions keyboard-log-actions">
+                <button id="copyLogButton" class="keyboard-log-action" title="Copy all events">Copy All</button>
+                <button id="clearLogButton" class="keyboard-log-action" title="Clear log">Clear</button>
+                <label class="keyboard-log-checkbox">
+                  <input id="autoScrollToggle" type="checkbox" checked /> Auto Scroll
+                </label>
               </div>
             </div>
-            <div id="logBody" class="log-body">
-              <div class="log-empty">No keyboard events yet. Use the arrow keys or Enter.</div>
+            <div class="log-body">
+              <div id="keyboardLogContent" class="keyboard-log-content" tabindex="0">
+                <div class="log-empty">No keyboard events yet. Use the arrow keys or Enter.</div>
+              </div>
             </div>
           </section>
         </main>
@@ -457,7 +482,10 @@
       const disconnectButton = document.getElementById('disconnectButton');
       const previewImageWrap = document.getElementById('previewImageWrap');
       const logBody = document.getElementById('logBody');
+      const keyboardLogContent = document.getElementById('keyboardLogContent');
+      const copyLogButton = document.getElementById('copyLogButton');
       const clearLogButton = document.getElementById('clearLogButton');
+      const autoScrollToggle = document.getElementById('autoScrollToggle');
 
 
       let lastPayload = null;
@@ -685,53 +713,127 @@
           .join('|');
       }
 
-      function renderKeyboardLog(events) {
-        // events is the original array from the device; we filter to keyboard events only
-        const original = Array.isArray(events) ? events : [];
-        const filtered = [];
-        const indices = [];
-        for (let i = 0; i < original.length; i++) {
-          const ev = original[i];
-          if (!ev || !ev.type) continue;
-          const t = String(ev.type).toLowerCase();
-          if (['keyup', 'key'].includes(t)) {
-            filtered.push(ev);
-            indices.push(i);
+      function normalizeKeyLabel(key) {
+        const value = String(key || '').trim();
+        if (!value) {
+          return '';
+        }
+        const lower = value.toLowerCase();
+        if (lower === 'enter' || lower === 'return') {
+          return { label: 'Enter', className: 'key-enter' };
+        }
+        if (lower === 'backspace') {
+          return { label: 'Backspace', className: 'key-backspace' };
+        }
+        if (lower === 'tab') {
+          return { label: 'Tab', className: 'key-tab' };
+        }
+        if (lower === 'escape' || lower === 'esc') {
+          return { label: 'Escape', className: 'key-escape' };
+        }
+        if (lower === 'delete' || lower === 'del') {
+          return { label: 'Delete', className: 'key-delete' };
+        }
+        if (lower.startsWith('key.')) {
+          const suffix = lower.slice(4);
+          if (suffix.startsWith('ctrl') || suffix.startsWith('shift') || suffix.startsWith('alt') || suffix.startsWith('tab') || suffix.startsWith('enter') || suffix.startsWith('esc') || suffix.startsWith('delete')) {
+            return normalizeKeyLabel(suffix.replace(/_/g, ' '));
           }
         }
+        if (/^key_[fF]\d+$/.test(value) || /^f\d+$/i.test(value)) {
+          return { label: value.toUpperCase(), className: 'key-fn' };
+        }
+        if (lower === 'shift') {
+          return { label: 'Shift', className: 'key-shift' };
+        }
+        if (lower === 'alt') {
+          return { label: 'Alt', className: 'key-alt' };
+        }
+        if (lower === 'ctrl' || lower === 'control') {
+          return { label: 'Ctrl', className: 'key-ctrl' };
+        }
+        if (lower === 'meta' || lower === 'command' || lower === 'cmd') {
+          return { label: 'Meta', className: 'key-ctrl' };
+        }
+        if (/^key_(up|down|left|right)$/.test(lower) || /^(arrowup|arrowdown|arrowleft|arrowright)$/i.test(lower) || /^(up|down|left|right)$/.test(lower)) {
+          const arrowLabel = value.replace(/key_/i, '').replace(/arrow/i, '');
+          return { label: `${arrowLabel.charAt(0).toUpperCase()}${arrowLabel.slice(1)} Arrow`, className: 'key-arrow' };
+        }
+        if (lower === 'space') {
+          return { label: 'Space', className: 'key-escape' };
+        }
+        return null;
+      }
 
+      function renderKeyboardLog(events) {
+        const original = Array.isArray(events) ? events : [];
+        const filtered = original.filter((ev) => ev && ev.type && ['keyup', 'key', 'press'].includes(String(ev.type).toLowerCase()));
         currentKeyboardEvents = filtered;
-        currentKeyboardIndices = indices;
+        currentKeyboardIndices = filtered.map((_, idx) => idx);
 
         if (!currentKeyboardEvents.length) {
-          logBody.innerHTML = '<div class="log-empty">No remote keyboard events yet.</div>';
+          keyboardLogContent.innerHTML = '<div class="log-empty">No remote keyboard events yet.</div>';
           return;
         }
 
-        // Render editable rows (newest first)
-        const rows = currentKeyboardEvents
-          .slice()
-          .reverse()
-          .map((event, revIndex) => {
-            const key = escapeHtml(event.key || '');
-            const time = formatKeyboardEventTime(event.time);
-            return `
-              <tr class="evt-log-row">
-                <td class="evt-time">${time}</td>
-                <td class="evt-key">${key}</td>
-              </tr>
-            `;
+        const lines = [];
+        let bufferedText = '';
+        let bufferedTimestamp = '';
+
+        function flushBuffer() {
+          if (!bufferedText) return;
+          lines.push({ time: bufferedTimestamp, text: bufferedText, html: escapeHtml(bufferedText) });
+          bufferedText = '';
+        }
+
+        currentKeyboardEvents.forEach((event) => {
+          const time = formatKeyboardEventTime(event.time) || '??:??:??.???';
+          const rawKey = String(event.key || '').trim();
+          const normalized = normalizeKeyLabel(rawKey);
+          const isPrintable = rawKey.length === 1 && /^[\w\s`~!@#$%^&*()\-_=+\[\]{};:'\\",.<>/?|]$/.test(rawKey);
+          const isSpace = rawKey === ' ' || rawKey.toLowerCase() === 'space';
+
+          if (normalized && !isSpace) {
+            flushBuffer();
+            const labelHtml = `<span class="key-label ${normalized.className}">${escapeHtml(normalized.label)}</span>`;
+            lines.push({ time, text: normalized.label, html: labelHtml });
+            return;
+          }
+
+          if (isSpace) {
+            bufferedText += ' ';
+            bufferedTimestamp = bufferedTimestamp || time;
+            return;
+          }
+
+          if (isPrintable) {
+            if (!bufferedText) {
+              bufferedTimestamp = time;
+            }
+            bufferedText += rawKey;
+            return;
+          }
+
+          flushBuffer();
+          const labelText = rawKey || 'Unknown';
+          const labelHtml = `<span class="key-label key-escape">${escapeHtml(labelText)}</span>`;
+          lines.push({ time, text: labelText, html: labelHtml });
+        });
+
+        flushBuffer();
+
+        const rendered = lines
+          .map((line) => {
+            const ts = `<span class="timestamp">[${escapeHtml(line.time)}]</span>`;
+            const body = line.html || escapeHtml(line.text);
+            return `<div class="log-line">${ts} ${body}</div>`;
           })
           .join('');
 
-        logBody.innerHTML = `
-          <table class="log-table">
-            <thead>
-              <tr><th>Time</th><th>Key</th></tr>
-            </thead>
-            <tbody>${rows}</tbody>
-          </table>
-        `;
+        keyboardLogContent.innerHTML = rendered;
+        if (autoScrollToggle.checked) {
+          keyboardLogContent.scrollTop = keyboardLogContent.scrollHeight;
+        }
       }
 
       function setPausedState(paused) {
@@ -812,7 +914,6 @@
       });
 
       clearLogButton.addEventListener('click', () => {
-        // Remove only keyboard events from the selected device's event list
         const selected = getSelectedDevice();
         if (selected && Array.isArray(selected.keyboard_events)) {
           const filtered = selected.keyboard_events.filter((ev) => {
@@ -832,6 +933,31 @@
         currentKeyboardEvents = [];
         renderKeyboardLog([]);
         updatePreview();
+      });
+
+      copyLogButton.addEventListener('click', async () => {
+        const text = Array.from(keyboardLogContent.querySelectorAll('.log-line'))
+          .map((node) => node.textContent || '')
+          .join('\n');
+        try {
+          await navigator.clipboard.writeText(text);
+        } catch (err) {
+          const textarea = document.createElement('textarea');
+          textarea.value = text;
+          textarea.style.position = 'fixed';
+          textarea.style.opacity = '0';
+          document.body.appendChild(textarea);
+          textarea.focus();
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+        }
+      });
+
+      autoScrollToggle.addEventListener('change', () => {
+        if (autoScrollToggle.checked) {
+          keyboardLogContent.scrollTop = keyboardLogContent.scrollHeight;
+        }
       });
 
       updatePreview();
