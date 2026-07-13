@@ -1118,6 +1118,14 @@
         fullscreenButton.title = isFullscreen ? 'Exit fullscreen mode' : 'Fullscreen';
       });
 
+      async function sendStopRequest(url) {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+        });
+        return response.ok;
+      }
+
       disconnectButton.addEventListener('click', () => {
         setPausedState(!isPaused);
       });
@@ -1128,20 +1136,29 @@
         }
         stopButton.disabled = true;
         stopButton.textContent = 'Stopping...';
-        try {
-          const response = await fetch('/stop', { method: 'POST' });
-          if (response.ok) {
-            setStoppedState();
-          } else {
-            const body = await response.text();
-            console.error('Stop request failed:', response.status, body);
-            stopButton.textContent = 'Stop failed';
-            stopButton.disabled = false;
+        const endpoints = [
+          'http://127.0.0.1:8766/stop',
+          'http://localhost:8766/stop',
+          window.location.origin + '/stop',
+        ];
+        let stopped = false;
+        for (const endpoint of endpoints) {
+          try {
+            stopped = await sendStopRequest(endpoint);
+            if (stopped) {
+              break;
+            }
+          } catch (error) {
+            console.warn('Stop request failed for', endpoint, error);
           }
-        } catch (error) {
-          console.error('Stop request error:', error);
-          // If the server closes immediately, consider it stopped.
+        }
+
+        if (stopped) {
           setStoppedState();
+        } else {
+          stopButton.textContent = 'Stop failed';
+          stopButton.disabled = false;
+          console.error('Unable to stop app via any endpoint.');
         }
       });
 
