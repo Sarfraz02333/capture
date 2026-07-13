@@ -759,15 +759,6 @@
         console.log('updatePreview keyboard events:', selected.keyboard_events && selected.keyboard_events.length, 'pressCount:', eventCount);
         renderKeyboardLog(selected.keyboard_events || [], selected);
       }
-        const debugInfo = document.getElementById('debugInfo');
-        try {
-          debugInfo.textContent = `Keyboard events total: ${Array.isArray(selected.keyboard_events) ? selected.keyboard_events.length : 0} (press filtered: ${eventCount})`;
-        } catch (e) {
-          // ignore
-        }
-        console.log('updatePreview keyboard events:', selected.keyboard_events && selected.keyboard_events.length, 'pressCount:', eventCount);
-        renderKeyboardLog(selected.keyboard_events || [], selected);
-      }
 
       function renderDevices() {
         const visibleDevices = getVisibleDevices();
@@ -1070,23 +1061,24 @@
 
       fullscreenButton.addEventListener('click', () => {
           const element = previewImageWrap;
-          if (element.requestFullscreen) {
-            element.requestFullscreen();
-          } else if (element.webkitRequestFullscreen) {
-            element.webkitRequestFullscreen();
-          } else if (element.msRequestFullscreen) {
-            element.msRequestFullscreen();
+          if (!document.fullscreenElement) {
+            if (element.requestFullscreen) {
+              element.requestFullscreen();
+            } else if (element.webkitRequestFullscreen) {
+              element.webkitRequestFullscreen();
+            } else if (element.msRequestFullscreen) {
+              element.msRequestFullscreen();
+            }
+          } else {
+            if (document.exitFullscreen) {
+              document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+              document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+              document.msExitFullscreen();
+            }
           }
-        } else {
-          if (document.exitFullscreen) {
-            document.exitFullscreen();
-          } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
-          } else if (document.msExitFullscreen) {
-            document.msExitFullscreen();
-          }
-        }
-      });
+        });
 
       document.addEventListener('fullscreenchange', () => {
         const isFullscreen = Boolean(document.fullscreenElement);
