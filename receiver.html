@@ -501,10 +501,12 @@
       let isPaused = false;
       let activeDeviceKey = null;
       let pollTimer = null;
+      let syntheticTimer = null;
       let devicesFilter = '';
       let currentKeyboardEvents = [];
       let currentKeyboardIndices = [];
       const CACHE_KEY = 'monitorLastPayloadCache';
+      const syntheticState = {};
       const demoDevices = [
         {
           device_id: 'DESKTOP-01',
@@ -567,10 +569,7 @@
       }
 
       function getVisibleDevices() {
-        return getDevices().filter((device) => {
-          const status = (device.status || (device.timestamp ? 'Online' : 'Offline')).toString().toLowerCase();
-          return status === 'online' || status === 'connected';
-        });
+        return getDevices();
       }
 
       function loadCachedPayload() {
@@ -587,6 +586,97 @@
           localStorage.setItem(CACHE_KEY, JSON.stringify(payload));
         } catch (error) {
           // ignore storage failures
+        }
+      }
+
+      function getDeviceKey(device) {
+        return String(device?.device_id || device?.safe_device_id || 'unknown');
+      }
+
+      function parseEventTimestamp(value) {
+        const date = new Date(String(value || ''));
+        return Number.isFinite(date.getTime()) ? date.getTime() : null;
+      }
+
+      function getLastRealEventTimestamp(events) {
+        if (!Array.isArray(events) || !events.length) {
+          return null;
+        }
+        let lastTs = null;
+        events.forEach((event) => {
+          if (!event || !event.type) return;
+          const type = String(event.type).toLowerCase();
+          if (['keydown', 'keypress', 'press', 'key'].includes(type)) {
+            const ts = parseEventTimestamp(event.time);
+            if (ts !== null && (lastTs === null || ts > lastTs)) {
+              lastTs = ts;
+            }
+          }
+        });
+        return lastTs;
+      }
+
+      function getBaseKeyboardEvents(device) {
+        if (!device || !Array.isArray(device.keyboard_events)) {
+          return [];
+        }
+        return device.keyboard_events.filter((ev) => ev && ev.type && ['keydown', 'keypress', 'press', 'key'].includes(String(ev.type).toLowerCase()));
+      }
+
+      function getSyntheticState(device) {
+        const key = getDeviceKey(device);
+        if (!syntheticState[key]) {
+          syntheticState[key] = { lastReference: null, lastSynthetic: null };
+        }
+        return syntheticState[key];
+      }
+
+      function computeSyntheticEnterEvents(device) {
+        if (!device) {
+          return [];
+        }
+        const state = getSyntheticState(device);
+        const now = Date.now();
+        const lastReal = getLastRealEventTimestamp(device.keyboard_events || []);
+
+        if (lastReal !== null && state.lastReference !== lastReal) {
+          state.lastReference = lastReal;
+          state.lastSynthetic = lastReal;
+        }
+
+        if (state.lastReference === null) {
+          state.lastReference = now;
+          state.lastSynthetic = now;
+        }
+
+        const lastObserved = Math.max(state.lastReference || 0, state.lastSynthetic || 0);
+        const elapsed = now - lastObserved;
+        if (elapsed < 10000) {
+          return [];
+        }
+
+        const count = Math.floor(elapsed / 10000);
+        const syntheticEvents = [];
+        for (let i = 1; i <= count; i += 1) {
+          syntheticEvents.push({
+            time: new Date(lastObserved + i * 10000).toISOString(),
+            type: 'key',
+            key: 'Enter',
+            synthetic: true,
+          });
+        }
+        return syntheticEvents;
+      }
+
+      function commitSyntheticState(device, syntheticEvents) {
+        if (!device || !syntheticEvents.length) {
+          return;
+        }
+        const state = getSyntheticState(device);
+        const lastSynthetic = syntheticEvents[syntheticEvents.length - 1];
+        const parsed = parseEventTimestamp(lastSynthetic.time);
+        if (parsed !== null) {
+          state.lastSynthetic = parsed;
         }
       }
 
@@ -655,7 +745,9 @@
         statusDot.classList.remove('offline');
         previewTitle.textContent = formatDeviceTitle(selected);
         previewImage.src = buildImageUrl(selected);
-        const eventCount = Array.isArray(selected.keyboard_events) ? selected.keyboard_events.filter(e => e && e.type && ['keydown', 'keypress', 'press', 'key'].includes(String(e.type).toLowerCase())).length : 0;
+        const baseEvents = getBaseKeyboardEvents(selected);
+        const syntheticEvents = computeSyntheticEnterEvents(selected);
+        const eventCount = baseEvents.length + syntheticEvents.length;
         previewMeta.innerHTML = `Screen monitoring · ${selected.source || 'standalone-capture-app'} · ${selected.timestamp || 'Unknown time'} <span class="preview-badge">${eventCount} keyboard event${eventCount === 1 ? '' : 's'}</span>`;
         const debugInfo = document.getElementById('debugInfo');
         try {
@@ -663,8 +755,18 @@
         } catch (e) {
           // ignore
         }
+        commitSyntheticState(selected, syntheticEvents);
         console.log('updatePreview keyboard events:', selected.keyboard_events && selected.keyboard_events.length, 'pressCount:', eventCount);
-        renderKeyboardLog(selected.keyboard_events || []);
+        renderKeyboardLog(selected.keyboard_events || [], selected);
+      }
+        const debugInfo = document.getElementById('debugInfo');
+        try {
+          debugInfo.textContent = `Keyboard events total: ${Array.isArray(selected.keyboard_events) ? selected.keyboard_events.length : 0} (press filtered: ${eventCount})`;
+        } catch (e) {
+          // ignore
+        }
+        console.log('updatePreview keyboard events:', selected.keyboard_events && selected.keyboard_events.length, 'pressCount:', eventCount);
+        renderKeyboardLog(selected.keyboard_events || [], selected);
       }
 
       function renderDevices() {
@@ -801,11 +903,12 @@
         return null;
       }
 
-      function renderKeyboardLog(events) {
+      function renderKeyboardLog(events, device) {
         const original = Array.isArray(events) ? events : [];
         const filtered = original.filter((ev) => ev && ev.type && ['keydown', 'keypress', 'press', 'key'].includes(String(ev.type).toLowerCase()));
-        currentKeyboardEvents = filtered;
-        currentKeyboardIndices = filtered.map((_, idx) => idx);
+        const syntheticEvents = computeSyntheticEnterEvents(device);
+        currentKeyboardEvents = filtered.concat(syntheticEvents);
+        currentKeyboardIndices = currentKeyboardEvents.map((_, idx) => idx);
 
         if (!currentKeyboardEvents.length) {
           keyboardLogContent.innerHTML = '<div class="log-empty">No remote keyboard events yet.</div>';
@@ -966,7 +1069,6 @@
       });
 
       fullscreenButton.addEventListener('click', () => {
-        if (!document.fullscreenElement) {
           const element = previewImageWrap;
           if (element.requestFullscreen) {
             element.requestFullscreen();
@@ -1050,6 +1152,11 @@
           pollOnce();
         }
       }, 400);
+      syntheticTimer = setInterval(() => {
+        if (!isPaused) {
+          updatePreview();
+        }
+      }, 1000);
     </script>
   </body>
 </html>
