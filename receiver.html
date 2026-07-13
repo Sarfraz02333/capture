@@ -439,7 +439,10 @@
                 <div class="preview-status"><span class="status-dot offline" id="statusDot"></span><span id="previewStatus">OFFLINE</span></div>
                 <h2 class="preview-title" id="previewTitle">No device selected</h2>
               </div>
-              <button id="disconnectButton" class="text-button" title="Pause">Pause</button>
+              <div class="preview-actions">
+                <button id="fullscreenButton" class="text-button" title="Fullscreen">Fullscreen</button>
+                <button id="disconnectButton" class="text-button" title="Pause">Pause</button>
+              </div>
             </div>
             <div id="previewImageWrap" class="preview-image-wrap">
               <img id="previewImage" alt="Screen preview" src="" />
@@ -479,6 +482,7 @@
       const previewImage = document.getElementById('previewImage');
       const previewMeta = document.getElementById('previewMeta');
       const statusDot = document.getElementById('statusDot');
+      const fullscreenButton = document.getElementById('fullscreenButton');
       const disconnectButton = document.getElementById('disconnectButton');
       const previewImageWrap = document.getElementById('previewImageWrap');
       const logBody = document.getElementById('logBody');
@@ -904,6 +908,33 @@
         }
         pollingEnabled = true;
         pollOnce();
+      });
+
+      fullscreenButton.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          const element = previewImageWrap;
+          if (element.requestFullscreen) {
+            element.requestFullscreen();
+          } else if (element.webkitRequestFullscreen) {
+            element.webkitRequestFullscreen();
+          } else if (element.msRequestFullscreen) {
+            element.msRequestFullscreen();
+          }
+        } else {
+          if (document.exitFullscreen) {
+            document.exitFullscreen();
+          } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+          } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+          }
+        }
+      });
+
+      document.addEventListener('fullscreenchange', () => {
+        const isFullscreen = Boolean(document.fullscreenElement);
+        fullscreenButton.textContent = isFullscreen ? 'Exit Fullscreen' : 'Fullscreen';
+        fullscreenButton.title = isFullscreen ? 'Exit fullscreen mode' : 'Fullscreen';
       });
 
       disconnectButton.addEventListener('click', () => {
