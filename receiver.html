@@ -794,7 +794,7 @@
           const type = String(event.type || '').toLowerCase();
           const normalized = normalizeKeyLabel(rawKey);
           const isPrintable = rawKey.length === 1 && /^[\w`~!@#$%^&*()\-_=+\[\]{};:'\\",.<>/?|]$/.test(rawKey);
-          const isSpace = rawKey === ' ' || rawKey.toLowerCase() === 'space';
+          const isSpace = rawKey === ' ' || rawKey.toLowerCase() === 'space' || rawKey.toLowerCase() === 'key.space';
 
           if ((type === 'press' || type === 'key') && (isPrintable || isSpace)) {
             if (!bufferedText) {
