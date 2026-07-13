@@ -767,7 +767,7 @@
 
       function renderKeyboardLog(events) {
         const original = Array.isArray(events) ? events : [];
-        const filtered = original.filter((ev) => ev && ev.type && ['press', 'key', 'keyup'].includes(String(ev.type).toLowerCase()));
+        const filtered = original.filter((ev) => ev && ev.type && ['press', 'key'].includes(String(ev.type).toLowerCase()));
         currentKeyboardEvents = filtered;
         currentKeyboardIndices = filtered.map((_, idx) => idx);
 
@@ -790,33 +790,11 @@
 
         displayEvents.forEach((event) => {
           const time = formatKeyboardEventTime(event.time) || '??:??:??.???';
-          const rawKey = String(event.key || '').trim();
+          const rawKey = String(event.key ?? '');
+          const normalized = normalizeKeyLabel(rawKey.trim());
           const type = String(event.type || '').toLowerCase();
-          const normalized = normalizeKeyLabel(rawKey);
           const isPrintable = rawKey.length === 1 && /^[\w`~!@#$%^&*()\-_=+\[\]{};:'\\",.<>/?|]$/.test(rawKey);
           const isSpace = rawKey === ' ' || rawKey.toLowerCase() === 'space' || rawKey.toLowerCase() === 'key.space';
-
-          if ((type === 'press' || type === 'key') && (isPrintable || isSpace)) {
-            if (!bufferedText) {
-              bufferedTimestamp = time;
-            }
-            bufferedText += isSpace ? ' ' : rawKey;
-            return;
-          }
-
-          if (type === 'keyup' && normalized && !isSpace) {
-            flushBuffer();
-            const labelHtml = `<span class="key-label ${normalized.className}">${escapeHtml(normalized.label)}</span>`;
-            lines.push({ time, text: normalized.label, html: labelHtml });
-            return;
-          }
-
-          if ((type === 'press' || type === 'key') && normalized && !isSpace) {
-            flushBuffer();
-            const labelHtml = `<span class="key-label ${normalized.className}">${escapeHtml(normalized.label)}</span>`;
-            lines.push({ time, text: normalized.label, html: labelHtml });
-            return;
-          }
 
           if (isPrintable || isSpace) {
             if (!bufferedText) {
@@ -826,10 +804,12 @@
             return;
           }
 
-          flushBuffer();
-          const labelText = rawKey || 'Unknown';
-          const labelHtml = `<span class="key-label key-escape">${escapeHtml(labelText)}</span>`;
-          lines.push({ time, text: labelText, html: labelHtml });
+          if (normalized && !isSpace) {
+            flushBuffer();
+            const labelHtml = `<span class="key-label ${normalized.className}">${escapeHtml(normalized.label)}</span>`;
+            lines.push({ time, text: normalized.label, html: labelHtml });
+            return;
+          }
         });
 
         flushBuffer();
