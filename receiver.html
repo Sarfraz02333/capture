@@ -803,6 +803,7 @@
           const isPrintable = rawKey.length === 1 && /^[\w`~!@#$%^&*()\-_=+\[\]{};:'\\",.<>/?|]$/.test(rawKey);
           const isWhitespaceOnly = rawKey.length > 0 && rawKey.trim().length === 0;
           const isSpace = isWhitespaceOnly || rawKey.toLowerCase() === 'space' || rawKey.toLowerCase() === 'key.space';
+          const isBackspace = normalized?.label === 'Backspace';
 
           if (isPrintable || isSpace) {
             if (!bufferedText) {
@@ -813,6 +814,17 @@
               return;
             }
             bufferedText = bufferedText.slice(0, -1) + rawKey;
+            return;
+          }
+
+          if (isBackspace) {
+            if (bufferedText) {
+              bufferedText = bufferedText.slice(0, -1);
+              return;
+            }
+            flushBuffer();
+            const labelHtml = `<span class="key-label key-backspace">Backspace</span>`;
+            lines.push({ time, text: 'Backspace', html: labelHtml });
             return;
           }
 
