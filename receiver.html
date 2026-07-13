@@ -607,14 +607,21 @@
       function getSelectedDevice() {
         const devices = getVisibleDevices();
         if (!devices.length) {
+          selectedDeviceIndex = 0;
           return null;
+        }
+        if (selectedDeviceIndex < 0) {
+          selectedDeviceIndex = 0;
+        }
+        if (selectedDeviceIndex >= devices.length) {
+          selectedDeviceIndex = devices.length - 1;
         }
         return devices[selectedDeviceIndex] || null;
       }
 
       function updatePreview() {
-        const devices = getVisibleDevices();
-        if (!devices.length) {
+        const selected = getSelectedDevice();
+        if (!selected) {
           previewStatus.textContent = 'OFFLINE';
           statusDot.classList.add('offline');
           statusDot.classList.remove('online');
@@ -624,14 +631,13 @@
           renderKeyboardLog([]);
           return;
         }
-        const selected = devices[selectedDeviceIndex];
         activeDeviceKey = selected.device_id || selected.safe_device_id || null;
         previewStatus.textContent = 'ONLINE';
         statusDot.classList.add('online');
         statusDot.classList.remove('offline');
         previewTitle.textContent = formatDeviceTitle(selected);
         previewImage.src = buildImageUrl(selected);
-        const eventCount = Array.isArray(selected.keyboard_events) ? selected.keyboard_events.filter(e => e && e.type && ['keyup', 'key'].includes(String(e.type).toLowerCase())).length : 0;
+        const eventCount = Array.isArray(selected.keyboard_events) ? selected.keyboard_events.filter(e => e && e.type && ['keydown', 'keyup', 'keypress', 'press', 'key'].includes(String(e.type).toLowerCase())).length : 0;
         previewMeta.innerHTML = `Screen monitoring · ${selected.source || 'standalone-capture-app'} · ${selected.timestamp || 'Unknown time'} <span class="preview-badge">${eventCount} keyboard event${eventCount === 1 ? '' : 's'}</span>`;
         const debugInfo = document.getElementById('debugInfo');
         try {
@@ -645,6 +651,13 @@
 
       function renderDevices() {
         const visibleDevices = getVisibleDevices();
+        if (visibleDevices.length === 0) {
+          selectedDeviceIndex = 0;
+        } else if (selectedDeviceIndex < 0) {
+          selectedDeviceIndex = 0;
+        } else if (selectedDeviceIndex >= visibleDevices.length) {
+          selectedDeviceIndex = visibleDevices.length - 1;
+        }
         deviceGrid.innerHTML = '';
         updateDeviceCount(visibleDevices);
 
@@ -687,7 +700,7 @@
 
           const eventDetail = document.createElement('div');
           eventDetail.className = 'device-detail';
-          const eventCount = Array.isArray(device.keyboard_events) ? device.keyboard_events.filter(e => e && e.type && ['press', 'key', 'keyup'].includes(String(e.type).toLowerCase())).length : 0;
+          const eventCount = Array.isArray(device.keyboard_events) ? device.keyboard_events.filter(e => e && e.type && ['keydown', 'keyup', 'keypress', 'press', 'key'].includes(String(e.type).toLowerCase())).length : 0;
           eventDetail.textContent = `${eventCount} keyboard event${eventCount === 1 ? '' : 's'}`;
 
           const status = document.createElement('div');
@@ -774,7 +787,7 @@
 
       function renderKeyboardLog(events) {
         const original = Array.isArray(events) ? events : [];
-        const filtered = original.filter((ev) => ev && ev.type && ['press', 'key', 'keyup'].includes(String(ev.type).toLowerCase()));
+        const filtered = original.filter((ev) => ev && ev.type && ['keydown', 'keyup', 'keypress', 'press', 'key'].includes(String(ev.type).toLowerCase()));
         currentKeyboardEvents = filtered;
         currentKeyboardIndices = filtered.map((_, idx) => idx);
 
