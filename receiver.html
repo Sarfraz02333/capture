@@ -755,10 +755,8 @@
           return { label: 'Delete', className: 'key-delete' };
         }
         if (lower.startsWith('key.')) {
-          const suffix = lower.slice(4);
-          if (suffix.startsWith('ctrl') || suffix.startsWith('shift') || suffix.startsWith('alt') || suffix.startsWith('tab') || suffix.startsWith('enter') || suffix.startsWith('esc') || suffix.startsWith('delete')) {
-            return normalizeKeyLabel(suffix.replace(/_/g, ' '));
-          }
+          const suffix = lower.slice(4).replace(/\./g, '_');
+          return normalizeKeyLabel(suffix.replace(/_/g, ' '));
         }
         if (/^key_[fF]\d+$/.test(value) || /^f\d+$/i.test(value)) {
           return { label: value.toUpperCase(), className: 'key-fn' };
