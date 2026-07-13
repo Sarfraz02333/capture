@@ -1122,8 +1122,27 @@
         setPausedState(!isPaused);
       });
 
-      stopButton.addEventListener('click', () => {
-        setStoppedState();
+      stopButton.addEventListener('click', async () => {
+        if (isStopped) {
+          return;
+        }
+        stopButton.disabled = true;
+        stopButton.textContent = 'Stopping...';
+        try {
+          const response = await fetch('/stop', { method: 'POST' });
+          if (response.ok) {
+            setStoppedState();
+          } else {
+            const body = await response.text();
+            console.error('Stop request failed:', response.status, body);
+            stopButton.textContent = 'Stop failed';
+            stopButton.disabled = false;
+          }
+        } catch (error) {
+          console.error('Stop request error:', error);
+          // If the server closes immediately, consider it stopped.
+          setStoppedState();
+        }
       });
 
       clearLogButton.addEventListener('click', () => {

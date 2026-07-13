@@ -4,6 +4,7 @@ import io
 import json
 import os
 import re
+import threading
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, quote, urlparse
@@ -196,6 +197,10 @@ class ReceiverHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         request_path = urlparse(self.path).path
+        if request_path in ('/stop', '/stop/'):
+            self.handle_stop_request()
+            return
+
         if request_path not in (UPLOAD_PATH, UPLOAD_PATH + '/'):
             self.send_error(404, 'Not found')
             return
@@ -298,6 +303,10 @@ class ReceiverHandler(BaseHTTPRequestHandler):
             'archive': archive_path,
             'device_id': str(device_id),
         })
+
+    def handle_stop_request(self):
+        self.send_json(200, {'status': 'stopping'})
+        threading.Thread(target=self.server.shutdown, daemon=True).start()
 
     def serve_file(self, filename):
         target = os.path.join(ROOT, filename)
