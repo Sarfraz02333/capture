@@ -794,13 +794,18 @@
           const normalized = normalizeKeyLabel(rawKey.trim());
           const type = String(event.type || '').toLowerCase();
           const isPrintable = rawKey.length === 1 && /^[\w`~!@#$%^&*()\-_=+\[\]{};:'\\",.<>/?|]$/.test(rawKey);
-          const isSpace = rawKey === ' ' || rawKey.toLowerCase() === 'space' || rawKey.toLowerCase() === 'key.space';
+          const isWhitespaceOnly = rawKey.length > 0 && rawKey.trim().length === 0;
+          const isSpace = isWhitespaceOnly || rawKey.toLowerCase() === 'space' || rawKey.toLowerCase() === 'key.space';
 
           if (isPrintable || isSpace) {
             if (!bufferedText) {
               bufferedTimestamp = time;
             }
-            bufferedText += isSpace ? ' ' : rawKey;
+            bufferedText += ' ';
+            if (!isPrintable) {
+              return;
+            }
+            bufferedText = bufferedText.slice(0, -1) + rawKey;
             return;
           }
 
