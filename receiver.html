@@ -445,6 +445,7 @@
               <div class="preview-actions">
                 <button id="fullscreenButton" class="text-button" title="Fullscreen">Fullscreen</button>
                 <button id="disconnectButton" class="text-button" title="Pause">Pause</button>
+                <button id="stopButton" class="text-button" title="Stop monitoring">Stop</button>
               </div>
             </div>
             <div id="previewImageWrap" class="preview-image-wrap">
@@ -487,6 +488,7 @@
       const statusDot = document.getElementById('statusDot');
       const fullscreenButton = document.getElementById('fullscreenButton');
       const disconnectButton = document.getElementById('disconnectButton');
+      const stopButton = document.getElementById('stopButton');
       const previewImageWrap = document.getElementById('previewImageWrap');
       const logBody = document.getElementById('logBody');
       const keyboardLogContent = document.getElementById('keyboardLogContent');
@@ -499,6 +501,7 @@
       let selectedDeviceIndex = 0;
       let pollingEnabled = true;
       let isPaused = false;
+      let isStopped = false;
       let activeDeviceKey = null;
       let pollTimer = null;
       let syntheticTimer = null;
@@ -976,6 +979,9 @@
       }
 
       function setPausedState(paused) {
+        if (isStopped) {
+          return;
+        }
         isPaused = paused;
         pollingEnabled = !paused;
         disconnectButton.textContent = paused ? 'Resume' : 'Pause';
@@ -995,6 +1001,29 @@
         statusDot.classList.add('online');
         previewMeta.textContent = 'Monitoring resumed.';
         updatePreview();
+      }
+
+      function setStoppedState() {
+        if (isStopped) {
+          return;
+        }
+        isStopped = true;
+        pollingEnabled = false;
+        isPaused = false;
+        disconnectButton.disabled = true;
+        refreshButton.disabled = true;
+        fullscreenButton.disabled = true;
+        stopButton.disabled = true;
+        previewStatus.textContent = 'STOPPED';
+        statusDot.classList.remove('online');
+        statusDot.classList.add('offline');
+        previewImageWrap.classList.add('paused');
+        previewImage.src = '';
+        previewMeta.textContent = 'Monitoring stopped. Reload to resume.';
+        clearInterval(pollTimer);
+        clearInterval(syntheticTimer);
+        pollTimer = null;
+        syntheticTimer = null;
       }
 
       function setDisconnectedState() {
@@ -1022,7 +1051,7 @@
       }
 
       async function pollOnce() {
-        if (!pollingEnabled || isPaused) {
+        if (isStopped || !pollingEnabled || isPaused) {
           return;
         }
         try {
@@ -1052,6 +1081,9 @@
       });
 
       refreshButton.addEventListener('click', () => {
+        if (isStopped) {
+          return;
+        }
         if (isPaused) {
           setPausedState(false);
         }
@@ -1088,6 +1120,10 @@
 
       disconnectButton.addEventListener('click', () => {
         setPausedState(!isPaused);
+      });
+
+      stopButton.addEventListener('click', () => {
+        setStoppedState();
       });
 
       clearLogButton.addEventListener('click', () => {
